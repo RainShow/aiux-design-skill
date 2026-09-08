@@ -10,6 +10,8 @@
 
 安装完成后，Agent 生成页面时会读取 [`SKILL.md`](aiux-design-skill/SKILL.md)；新项目的依赖、样式和模板落地方式见 [`bootstrap.md`](aiux-design-skill/references/bootstrap.md)。
 
+
+
 ## 新项目怎么走
 
 1. 使用上方提示词安装本 Skill，或将 `aiux-design-skill/` 复制到新仓库的 `.cursor/skills/aiux-design-skill/`
@@ -29,6 +31,8 @@ Step C：按 /page-layout list 实现第一个真实列表页、表单页、详�
 ```
 
 底座齐了之后，按下面三个常见场景继续加页。选型与复制哪份模板以 [`SKILL.md`](aiux-design-skill/SKILL.md) 为准，提示词只说业务意图。
+
+
 
 ## 常见使用场景
 
