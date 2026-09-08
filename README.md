@@ -8,11 +8,11 @@
 帮我安装skill：https://github.com/RainShow/aiux-design-skill
 ```
 
-安装完成后，Agent 生成页面时会读取 [`SKILL.md`](skills/aiux-design-skill/SKILL.md)；新项目的依赖、样式和模板落地方式见 [`bootstrap.md`](skills/aiux-design-skill/references/bootstrap.md)。
+安装完成后，Agent 生成页面时会读取 [`SKILL.md`](aiux-design-skill/SKILL.md)；新项目的依赖、样式和模板落地方式见 [`bootstrap.md`](aiux-design-skill/references/bootstrap.md)。
 
 ## 新项目怎么走
 
-1. 使用上方提示词安装本 Skill，或将 `skills/aiux-design-skill/` 复制到新仓库的 `.cursor/skills/aiux-design-skill/`
+1. 使用上方提示词安装本 Skill，或将 `aiux-design-skill/` 复制到新仓库的 `.cursor/skills/aiux-design-skill/`
 2. 把下面这段发给 Agent（它会分三步做，每步停下来等你确认）
 3. 之后用页面命令继续加页
 
@@ -28,7 +28,7 @@ Step C：按 /page-layout list 实现第一个真实列表页、表单页、详�
 全程遵守 aiux-design-skill，不要偏离规范另起样式体系。
 ```
 
-底座齐了之后，按下面三个常见场景继续加页。选型与复制哪份模板以 [`SKILL.md`](skills/aiux-design-skill/SKILL.md) 为准，提示词只说业务意图。
+底座齐了之后，按下面三个常见场景继续加页。选型与复制哪份模板以 [`SKILL.md`](aiux-design-skill/SKILL.md) 为准，提示词只说业务意图。
 
 ## 常见使用场景
 
@@ -83,4 +83,4 @@ Step C：按 /page-layout list 实现第一个真实列表页、表单页、详�
 
 登录/IDE/空态把命令换成 `/page-layout login`、`ide`、`empty` 即可。
 
-更完整的文件索引、页面模板和样式说明，请查看 [Skill 详细使用指南](skills/aiux-design-skill/README.md)。
+更完整的文件索引、页面模板和样式说明，请查看 [Skill 详细使用指南](aiux-design-skill/README.md)。
