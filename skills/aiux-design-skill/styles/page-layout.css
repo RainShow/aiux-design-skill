@@ -1,0 +1,1852 @@
+/*
+ * Page Layout Patterns — 页面级布局全局样式
+ * 在新项目中 @import 或合并到主样式文件；需配合 Arco 主题 19155 CSS 变量。
+ */
+
+/* 服务管理页：Tree 样式保持 Arco 默认（按 Tree 基础用法） */
+
+/* 服务目录：目录树（对齐基础组件 Tree 规范） */
+.service-catalog-tree .arco-tree-node-switcher,
+.service-catalog-tree .arco-tree-node-indent-block {
+  /* 设计稿：角标/缩进块 24px（= 12px 中线对齐竖线） */
+  width: 24px !important;
+  margin-right: 0 !important;
+}
+.service-catalog-tree .arco-tree-node-switcher {
+  height: 24px !important;
+}
+.service-catalog-tree .arco-tree-node-switcher-icon {
+  /* 设计稿：角标图标 12px，居中在 24px 容器 */
+  width: 12px !important;
+  height: 12px !important;
+}
+.service-catalog-tree .arco-tree-node-switcher-icon svg {
+  width: 12px !important;
+  height: 12px !important;
+  /* Arco 默认会 rotate(-90deg) 来复用同一个 caret；
+     这里我们已传入自定义 switcherIcon（右/下），需要禁止旋转。 */
+  transform: none !important;
+}
+.service-catalog-tree.arco-tree-show-line .arco-tree-node-indent-block::before,
+.service-catalog-tree.arco-tree-show-line .arco-tree-node-is-leaf:not(.arco-tree-node-is-tail) .arco-tree-node-indent::after {
+  border-left-color: var(--yb-border-2);
+}
+
+/* showLine 连线定位：以 24px 块的中线(12px)为准，避免断续 */
+.service-catalog-tree.arco-tree-show-line .arco-tree-node-indent-block::before {
+  left: 12px !important;
+  transform: none !important;
+  /* 每行的 indent-block 会因节点 padding 产生缝隙，这里用负值让相邻行连线重叠，从而视觉连续 */
+  top: -4px !important;
+  bottom: -4px !important;
+}
+/* Arco 会在某些层级给 indent-block 加 lineless 来隐藏竖线；
+   在服务目录树中我们需要保持层级连线一致，故强制按同一规则绘制。 */
+.service-catalog-tree.arco-tree-show-line .arco-tree-node-indent-block-lineless::before {
+  display: block !important;
+  left: 12px !important;
+  transform: none !important;
+  top: -4px !important;
+  bottom: -4px !important;
+  border-left-color: var(--yb-border-2) !important;
+}
+.service-catalog-tree.arco-tree-show-line .arco-tree-node-is-leaf:not(.arco-tree-node-is-tail) .arco-tree-node-indent::after {
+  left: 12px !important;
+  right: auto !important;
+  transform: none !important;
+  top: 12px !important;
+  bottom: -4px !important;
+}
+.service-catalog-tree .arco-tree-node-title {
+  /* 设计稿：py 4px / pr 5px / 圆角 2px */
+  padding: 4px 5px !important;
+  border-radius: 2px !important;
+  margin-left: 0 !important;
+  line-height: 22px !important;
+  /* 保持 Arco Tree 节点行高/对齐（避免文字下方出现额外空白） */
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+.service-catalog-tree .service-catalog-tree-title {
+  /* 省略号由文字节点本身承担（在 flex 容器内必须 min-width:0 才会触发 ellipsis） */
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.service-catalog-tree .arco-tree-node-title-text {
+  /* Arco 实际承载 renderTitle 的容器：这里做最终 ellipsis 兜底，避免被直接裁切看不到 ... */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+.service-catalog-tree .arco-tree-node-title:hover {
+  background-color: var(--color-fill-2);
+}
+.service-catalog-tree .arco-tree-node-title-block {
+  /* 与设计稿 title-*-level 一致：内容区左侧留 4px */
+  padding-left: 4px !important;
+}
+
+.service-catalog-tree .arco-tree-node-is-leaf .arco-tree-node-switcher-icon {
+  display: none;
+}
+
+/* 服务目录：去掉 Typography 默认段落外边距（避免每行下方多一截空白） */
+.service-catalog-tree .arco-typography,
+.service-catalog-tree .arco-typography p,
+.service-catalog-tree p.arco-typography {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* 服务目录：标题区域收缩 + 超出省略，避免越过 220px 分割线 */
+.service-catalog-tree .arco-tree-node-title-block {
+  min-width: 0;
+}
+.service-catalog-tree .arco-tree-node-title {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* 元数据目录：类型图标（title 行内或 Arco `icon` 槽位，挂接弹窗等仍用后者） */
+.service-catalog-tree .arco-tree-node-custom-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin-right: 6px;
+}
+.service-catalog-tree .metadata-catalog-tree-type-icon,
+.service-catalog-tree .arco-tree-node-custom-icon .metadata-catalog-tree-type-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-2);
+}
+.service-catalog-tree .metadata-catalog-tree-type-icon svg,
+.service-catalog-tree .arco-tree-node-custom-icon .metadata-catalog-tree-type-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.service-catalog-tree .metadata-catalog-tree-type-icon--img,
+.service-catalog-tree .arco-tree-node-custom-icon .metadata-catalog-tree-type-icon--img {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.service-catalog-tree .arco-tree-node-selected .metadata-catalog-tree-type-icon,
+.service-catalog-tree .arco-tree-node-selected .arco-tree-node-custom-icon .metadata-catalog-tree-type-icon {
+  color: rgb(var(--primary-6));
+}
+
+/* 列表/详情表格 · 表体滚动区：轨道尺寸常驻，thumb 默认透明，悬停再显色（与 content-scroll 一致，避免 0→6px 挤布局） */
+.service-manage-table .arco-table-body,
+.service-detail-table .arco-table-body {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.service-manage-table .arco-table-body::-webkit-scrollbar,
+.service-detail-table .arco-table-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.service-manage-table .arco-table-body::-webkit-scrollbar-track,
+.service-detail-table .arco-table-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.service-manage-table .arco-table-body::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-body::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+.service-manage-table .arco-table-body:hover,
+.service-detail-table .arco-table-body:hover {
+  scrollbar-color: rgba(41, 47, 66, 0.25) transparent;
+}
+.service-manage-table .arco-table-body:hover::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-body:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.25);
+}
+
+/* scroll.x 时横向滚动在 content-inner / content-scroll：轨道尺寸常驻，thumb 默认透明，悬停再显色。
+   避免 webkit 上 0→6px 才把横滚条「长出来」挤动下方分页。 */
+.service-manage-table .arco-table-content-inner,
+.service-manage-table .arco-table-content-scroll,
+.service-detail-table .arco-table-content-inner,
+.service-detail-table .arco-table-content-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.service-manage-table .arco-table-content-inner::-webkit-scrollbar,
+.service-manage-table .arco-table-content-scroll::-webkit-scrollbar,
+.service-detail-table .arco-table-content-inner::-webkit-scrollbar,
+.service-detail-table .arco-table-content-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.service-manage-table .arco-table-content-inner::-webkit-scrollbar-track,
+.service-manage-table .arco-table-content-scroll::-webkit-scrollbar-track,
+.service-detail-table .arco-table-content-inner::-webkit-scrollbar-track,
+.service-detail-table .arco-table-content-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.service-manage-table .arco-table-content-inner::-webkit-scrollbar-thumb,
+.service-manage-table .arco-table-content-scroll::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-content-inner::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-content-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+.service-manage-table .arco-table-content-inner:hover,
+.service-manage-table .arco-table-content-scroll:hover,
+.service-detail-table .arco-table-content-inner:hover,
+.service-detail-table .arco-table-content-scroll:hover {
+  scrollbar-color: rgba(41, 47, 66, 0.25) transparent;
+}
+.service-manage-table .arco-table-content-inner:hover::-webkit-scrollbar-thumb,
+.service-manage-table .arco-table-content-scroll:hover::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-content-inner:hover::-webkit-scrollbar-thumb,
+.service-detail-table .arco-table-content-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.25);
+}
+
+/* 表格外层 `overflow-x-auto` + Arco 表：同上，避免悬停显条时挤布局 */
+.overflow-x-auto:has(.arco-table.service-manage-table),
+.overflow-x-auto:has(.arco-table.service-detail-table) {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.overflow-x-auto:has(.arco-table.service-manage-table)::-webkit-scrollbar,
+.overflow-x-auto:has(.arco-table.service-detail-table)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.overflow-x-auto:has(.arco-table.service-manage-table)::-webkit-scrollbar-track,
+.overflow-x-auto:has(.arco-table.service-detail-table)::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-x-auto:has(.arco-table.service-manage-table)::-webkit-scrollbar-thumb,
+.overflow-x-auto:has(.arco-table.service-detail-table)::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+.overflow-x-auto:has(.arco-table.service-manage-table):hover,
+.overflow-x-auto:has(.arco-table.service-detail-table):hover {
+  scrollbar-color: rgba(41, 47, 66, 0.25) transparent;
+}
+.overflow-x-auto:has(.arco-table.service-manage-table):hover::-webkit-scrollbar-thumb,
+.overflow-x-auto:has(.arco-table.service-detail-table):hover::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.25);
+}
+
+/* 页面级空态：插画 100×100；图→标题 16；标题→说明 8；说明→按钮 16；page 布局距顶 1/4 X */
+.create-catalog-business-item-empty--page {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.create-catalog-business-item-empty__offset {
+  flex: 0 0 25%;
+  width: 100%;
+  height: 25%;
+  pointer-events: none;
+}
+
+.create-catalog-business-item-empty--inline {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-catalog-business-item-empty__stack {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.create-catalog-business-item-empty__img {
+  width: 100px;
+  height: 100px;
+  max-width: min(100px, 100%);
+  object-fit: contain;
+}
+
+.create-catalog-business-item-empty__title {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 16px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.create-catalog-business-item-empty__desc {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.create-catalog-business-item-empty__actions {
+  flex-shrink: 0;
+  margin-top: 16px;
+}
+
+/**
+ * 列表/详情内表格无数据空态：与「创建传输任务 · 自定义参数配置」、ER 表编辑抽屉统一
+ * —— page-level-empty-state.svg、100×100 插画区、主文案 16/24/600；默认 `Empty` 见下述选择器。
+ */
+.service-manage-table .arco-table-no-data,
+.service-detail-table .arco-table-no-data {
+  box-sizing: border-box;
+  padding: 48px 16px;
+}
+.service-manage-table .arco-table-no-data .arco-empty-image svg.arco-icon-empty,
+.service-detail-table .arco-table-no-data .arco-empty-image svg.arco-icon-empty {
+  display: none;
+}
+.service-manage-table .arco-table-no-data .arco-empty-image,
+.service-detail-table .arco-table-no-data .arco-empty-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  background-image: url('../assets/empty/page-level-empty-state.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.service-manage-table .arco-table-no-data .arco-empty-description,
+.service-detail-table .arco-table-no-data .arco-empty-description {
+  color: var(--color-text-1);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  font-family: PingFang SC, system-ui, sans-serif;
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* 服务管理页：表格表头加粗 + 无底色（对齐 Figma）+ 与表体分隔线（1px / --yb-border-2） */
+.service-manage-table .arco-table-thead > tr > th,
+.service-manage-table .arco-table-th {
+  font-weight: 600;
+  color: var(--color-text-1);
+  border-bottom: var(--yb-hairline-w) solid var(--yb-border-2);
+}
+/* 固定右列：略收紧左侧内边距，避免与前一列之间留白过大 */
+.service-manage-table .arco-table-thead > tr > th.arco-table-col-fixed-right,
+.service-manage-table .arco-table-body .arco-table-td.arco-table-col-fixed-right,
+.service-manage-table tbody .arco-table-td.arco-table-col-fixed-right {
+  padding-left: 12px;
+}
+/* 非固定列表头无底色；固定列保持 arco 默认底色，避免透出叠层 */
+.service-manage-table .arco-table-thead > tr > th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right),
+.service-manage-table .arco-table-th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right) {
+  background-color: transparent !important;
+}
+/* 固定列表头底色改为白色（对齐设计） */
+.service-manage-table .arco-table-thead > tr > th.arco-table-col-fixed-left,
+.service-manage-table .arco-table-thead > tr > th.arco-table-col-fixed-right,
+.service-manage-table .arco-table-th.arco-table-col-fixed-left,
+.service-manage-table .arco-table-th.arco-table-col-fixed-right {
+  background-color: var(--color-bg-2) !important;
+}
+/* 固定列单元格也保持白底，避免透出 */
+.service-manage-table .arco-table-td.arco-table-col-fixed-left,
+.service-manage-table .arco-table-td.arco-table-col-fixed-right {
+  background-color: var(--color-bg-2);
+}
+
+/*
+ * 列表页表格行高：表头与表体数据行统一 48px（全站挂 `service-manage-table` 的列表页）
+ * Arco 默认 td / th-item 为 padding 9px 16px，与 height:48 在 border-box 下会挤占内容区并造成列间/页间行高观感不一致；此处清零纵向内边距并锁 tr 高度。
+ * 注意：仅设置 scroll.x 时 Arco 不包一层 div.arco-table-body，表体在 table > tbody 下，故行高选择器须同时写 tbody 与 .arco-table-body（仅 scroll.y 固定表头时出现）。
+ */
+.service-manage-table .arco-table-thead > tr > th,
+.service-manage-table .arco-table-th {
+  height: 48px;
+  vertical-align: middle;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+.service-manage-table .arco-table-thead .arco-table-th-item {
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+.service-manage-table .arco-table-thead .arco-table-col-has-sorter .arco-table-cell-with-sorter {
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+}
+.service-manage-table .arco-table-thead > tr > th .arco-table-cell,
+.service-manage-table .arco-table-th .arco-table-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.service-manage-table .arco-table-thead tr {
+  height: 48px;
+}
+.service-manage-table .arco-table-body .arco-table-tr,
+.service-manage-table tbody .arco-table-tr {
+  height: 48px;
+}
+.service-manage-table .arco-table-body .arco-table-td,
+.service-manage-table tbody .arco-table-td {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  vertical-align: middle;
+  padding-top: 0;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  line-height: 22px;
+  font-size: 14px;
+}
+.service-manage-table .arco-table-body .arco-table-td .arco-table-cell,
+.service-manage-table tbody .arco-table-td .arco-table-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 22px;
+}
+.service-manage-table .arco-table-body .arco-table-td .arco-table-cell-wrap-value,
+.service-manage-table tbody .arco-table-td .arco-table-cell-wrap-value {
+  line-height: 22px;
+}
+
+/*
+ * 数据集成 · 数据源管理（通用列表「带 Tab + 双行行高」范例）：表头 40px；表体 64px 容纳「连接信息」双行（14×22），二者互不牵连。页头布局与数据服务详情 ServiceDetailPage 一致（见 docs/list-page-layout-reference.md §3）。
+ */
+.data-source-manage-table.service-manage-table .arco-table-thead > tr > th,
+.data-source-manage-table.service-manage-table .arco-table-th {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+}
+.data-source-manage-table.service-manage-table .arco-table-thead tr {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+}
+.data-source-manage-table.service-manage-table .arco-table-thead > tr > th .arco-table-cell,
+.data-source-manage-table.service-manage-table .arco-table-th .arco-table-cell {
+  max-height: 40px;
+  overflow: hidden;
+}
+.data-source-manage-table.service-manage-table .arco-table-thead .arco-table-th-item {
+  max-height: 40px;
+  overflow: hidden;
+}
+.data-source-manage-table.service-manage-table .arco-table-body .arco-table-tr,
+.data-source-manage-table.service-manage-table tbody .arco-table-tr {
+  height: 64px;
+}
+.data-source-manage-table.service-manage-table .arco-table-body .arco-table-td,
+.data-source-manage-table.service-manage-table tbody .arco-table-td {
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+}
+
+/*
+ * 可选：双行列表表体 64px（服务名称/地址等可两行）。服务管理主列表已改为单行 48px + `service-manage-list-table--row48-flex`。
+ * 参考数据源管理双行规范：表头 40px；表体 64px 容纳两行（14×22）。
+ */
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-thead > tr > th,
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-th {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+}
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-thead tr {
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+}
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-thead > tr > th .arco-table-cell,
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-th .arco-table-cell {
+  max-height: 40px;
+  overflow: hidden;
+}
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-thead .arco-table-th-item {
+  max-height: 40px;
+  overflow: hidden;
+}
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-body .arco-table-tr,
+.service-manage-list-table--row64-2lines.service-manage-table tbody .arco-table-tr {
+  height: 64px;
+}
+.service-manage-list-table--row64-2lines.service-manage-table .arco-table-body .arco-table-td,
+.service-manage-list-table--row64-2lines.service-manage-table tbody .arco-table-td {
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+}
+
+/*
+ * 供需 / 交付等「混合列」列表（需求审批、我的需求、交付任务等）：表体 flex 纵向居中。
+ * 行高仅由外层 `service-manage-table` 的 td/th 锁 48px；cell 用 height:100% 填满，避免再给 cell 写死 48 与 td 叠成双高。
+ */
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-body .arco-table-td .arco-table-cell,
+.service-manage-list-table--row48-flex.service-manage-table tbody .arco-table-td .arco-table-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box;
+}
+/* 仅非固定列裁切溢出；固定列上的 Arco 阴影在 `::after` 且会画出单元格外，勿对 fixed td 设 overflow:hidden（与资源目录仅挂 service-manage-table 行为一致） */
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-body .arco-table-td:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right),
+.service-manage-list-table--row48-flex.service-manage-table tbody .arco-table-td:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right) {
+  overflow: hidden;
+}
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-body .arco-table-td .arco-table-cell-text-ellipsis,
+.service-manage-list-table--row48-flex.service-manage-table tbody .arco-table-td .arco-table-cell-text-ellipsis {
+  min-width: 0;
+}
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-body .arco-table-td .arco-table-cell.arco-table-cell-text-ellipsis > .arco-table-cell-wrap-value,
+.service-manage-list-table--row48-flex.service-manage-table tbody .arco-table-td .arco-table-cell.arco-table-cell-text-ellipsis > .arco-table-cell-wrap-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-thead .arco-table-th-item {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box;
+}
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-thead > tr > th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right),
+.service-manage-list-table--row48-flex.service-manage-table .arco-table-th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right) {
+  overflow: hidden;
+}
+
+/* 服务管理列表：单元格内长文案最多两行（14px 字号 × 22px 行高），置于 48px 行内 */
+.service-manage-table .service-manage-cell-2lines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-all;
+  line-height: 22px;
+  max-height: 44px;
+}
+
+/* 服务管理页：操作列不允许中文逐字换行 */
+.service-manage-table .service-manage-actions {
+  white-space: nowrap;
+  word-break: keep-all;
+  flex-wrap: nowrap;
+}
+.service-manage-table .service-manage-actions .arco-link {
+  white-space: nowrap;
+  word-break: keep-all;
+  /* 设计 12px 为「文字到文字」间距：gap-3(12px) + Link 默认左右 padding 会偏大，故收紧 */
+  padding-left: 0;
+  padding-right: 0;
+}
+/* 操作列：不与「错误态」同色，与其它操作链接一致 */
+.service-manage-table .service-manage-actions .arco-link.arco-link-is-error {
+  color: rgb(var(--link-6));
+}
+.service-manage-table .service-manage-actions .arco-link.arco-link-is-error:hover {
+  color: rgb(var(--link-5));
+}
+
+/* 列表表格名称列文字链：与资产目录「目录名称」一致，覆盖 Arco Link 默认按钮式 padding/背景 */
+.service-manage-table .arco-table-td .list-table-name-link,
+.arco-table-td .list-table-name-link {
+  display: inline;
+  padding: 0 !important;
+  height: auto !important;
+  line-height: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  vertical-align: baseline;
+  cursor: pointer;
+}
+.service-manage-table .arco-table-td .arco-link.list-table-name-link,
+.arco-table-td .arco-link.list-table-name-link {
+  color: var(--color-text-1) !important;
+}
+.service-manage-table .arco-table-td .arco-link.list-table-name-link:hover,
+.arco-table-td .arco-link.list-table-name-link:hover {
+  color: rgb(var(--primary-6)) !important;
+  background: transparent !important;
+}
+.service-manage-table .arco-table-td a.list-table-name-link:visited,
+.arco-table-td a.list-table-name-link:visited {
+  color: var(--color-text-1);
+}
+.service-manage-table .arco-table-td a.list-table-name-link:hover,
+.arco-table-td a.list-table-name-link:hover {
+  color: rgb(var(--primary-6));
+}
+
+/* 通用：按钮式单选（Radio.Group type="button"）按基础组件 v2.1 样式对齐（线型）
+   Arco 真实类名为 `.arco-radio-group-type-button` + `.arco-radio-button` + `.arco-radio-button-inner`
+*/
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button {
+  height: 32px;
+  padding: 0; /* 覆盖 arco 默认 1.5px 内边距 */
+  line-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button {
+  height: 32px;
+  margin: 0; /* 覆盖 arco 默认 margin:1.5px，避免视觉发虚 */
+  border-radius: 2px;
+  background-color: var(--color-bg-2);
+  color: var(--color-text-2);
+  box-shadow: none;
+}
+/* 去掉 arco 默认背景块与分隔线伪元素 */
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button::before,
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button::after {
+  display: none !important;
+}
+/* 通过边框拼接实现分段按钮（1px 视觉） */
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button {
+  border: 1px solid var(--color-border-3);
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button + .arco-radio-button {
+  margin-left: -1px;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button:first-of-type {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button:last-of-type {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button
+  .arco-radio-button:not(:first-of-type):not(:last-of-type) {
+  border-radius: 0;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button-inner {
+  /* 用 flex 垂直居中，避免字体基线导致“偏上” */
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  line-height: 22px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button:hover {
+  background-color: var(--color-bg-2);
+  color: var(--color-text-2);
+  border-color: var(--color-border-3);
+}
+/* 选中态：Figma 基础组件 v2.1「按钮式单选」331969:6378 — 底 primary-1、边与字 primary-6 */
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button.arco-radio-checked {
+  background-color: rgb(var(--primary-1));
+  color: rgb(var(--primary-6));
+  font-weight: 500;
+  border-color: rgb(var(--primary-6));
+  z-index: 1;
+}
+.yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button.arco-radio-checked:hover {
+  background-color: rgb(var(--primary-1));
+  border-color: rgb(var(--primary-6));
+}
+
+/* 服务详情页：表格样式对齐「服务管理」Table（主题 19155）；表体滚动条见上文 `.service-detail-table .arco-table-body` 合并规则 */
+
+.service-detail-table .arco-table-thead > tr > th,
+.service-detail-table .arco-table-th {
+  font-weight: 600;
+  color: var(--color-text-1);
+  border-bottom: var(--yb-hairline-w) solid var(--yb-border-2);
+}
+.service-detail-table .arco-table-thead > tr > th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right),
+.service-detail-table .arco-table-th:not(.arco-table-col-fixed-left):not(.arco-table-col-fixed-right) {
+  background-color: transparent !important;
+}
+.service-detail-table .arco-table-thead > tr > th .arco-table-cell,
+.service-detail-table .arco-table-th .arco-table-cell {
+  background-color: transparent !important;
+}
+.service-detail-table .arco-table-thead > tr > th.arco-table-col-fixed-left,
+.service-detail-table .arco-table-thead > tr > th.arco-table-col-fixed-right,
+.service-detail-table .arco-table-th.arco-table-col-fixed-left,
+.service-detail-table .arco-table-th.arco-table-col-fixed-right {
+  background-color: var(--color-bg-2) !important;
+}
+.service-detail-table .arco-table-td.arco-table-col-fixed-left,
+.service-detail-table .arco-table-td.arco-table-col-fixed-right {
+  background-color: var(--color-bg-2);
+}
+
+.service-detail-table .arco-table-body .arco-table-td {
+  vertical-align: top;
+}
+
+/* 通用表单配置页（.app-form-page）：全页水平表单 + 抽屉垂直表单共用；见 docs/form-page-layout-reference.md（第 2 节、第 11 节） */
+/* 垂直布局：label 与正文 14/22，与上下结构留白一致 */
+.app-form-page .arco-form-item.arco-form-layout-vertical .arco-form-label-item {
+  line-height: var(--yb-lh-22);
+}
+.app-form-page .arco-form-item.arco-form-layout-vertical .arco-form-label-item > label {
+  display: flex;
+  align-items: center;
+  font-size: var(--yb-fs-14);
+  line-height: var(--yb-lh-22);
+  white-space: nowrap;
+  --yb-form-required-space: 12px;
+  --yb-form-required-gap: 4px;
+}
+/* 水平布局（左右结构）：label 行高 32px，与 32px 高输入类控件垂直对齐 */
+.app-form-page .arco-form-item.arco-form-layout-horizontal .arco-form-label-item {
+  line-height: 32px;
+  text-align: left;
+}
+.app-form-page .arco-form-item.arco-form-layout-horizontal .arco-form-label-item > label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  font-size: var(--yb-fs-14);
+  line-height: 32px;
+  white-space: nowrap;
+  --yb-form-required-space: 12px;
+  --yb-form-required-gap: 4px;
+}
+.app-form-page .arco-form-item.arco-form-layout-horizontal .arco-form-item-control {
+  justify-content: flex-start;
+}
+.app-form-page .arco-form-label-item .arco-form-item-symbol {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  width: var(--yb-form-required-space);
+  margin-right: var(--yb-form-required-gap);
+  justify-content: center;
+}
+.app-form-page .arco-form-label-item .arco-form-item-symbol svg {
+  transform: scale(0.5);
+}
+
+/* 水平布局：非必填项预留星号占位，与必填项 label 文案左对齐（依赖 :has） */
+.app-form-page .arco-form-item.arco-form-layout-horizontal .arco-form-label-item > label:not(:has(.arco-form-item-symbol)) {
+  padding-left: calc(var(--yb-form-required-space) + var(--yb-form-required-gap));
+}
+
+/* 垂直布局：label 与输入控件区间距 8px（Arco 默认 label 下边距约 16px） */
+.app-form-page .arco-form-item.arco-form-layout-vertical > .arco-form-label-item {
+  margin-bottom: 8px;
+}
+
+/* 配置类抽屉标题栏：高度与顶栏 token 一致，标题与关闭按钮垂直居中（Drawer 需加 class `yb-form-drawer`，见 formPageLayout.FORM_DRAWER_ARCO_CLASS） */
+.yb-form-drawer .arco-drawer-header {
+  height: var(--yb-topnav-h);
+  min-height: var(--yb-topnav-h);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-bottom-width: var(--yb-hairline-w);
+  border-bottom-color: var(--yb-border-2);
+}
+.yb-form-drawer .arco-drawer-footer {
+  border-top-width: var(--yb-hairline-w);
+  border-top-color: var(--yb-border-2);
+}
+.yb-form-drawer .arco-drawer-header-title {
+  display: flex;
+  align-items: center;
+  line-height: var(--yb-lh-24);
+}
+/* 关闭按钮与 header 兄弟节点，Arco 用固定 top；按标题栏高度与 12px 图标重算 */
+.yb-form-drawer.arco-drawer .arco-drawer-close-icon {
+  top: calc((var(--yb-topnav-h) - 12px) / 2);
+}
+
+/* 转化为物理模型：侧栏在动画容器内 height:100%；主区/底栏正常分区。
+   Arco Drawer 在开启 focusLock 时会在 inner 下插入 span[focus-lock] 再包 arco-drawer-scroll，
+   该 span 默认不显式参与 flex，会导致主区高度为 0、底栏“贴”在标题下，需把 inner 的唯一直接子级拉满。 */
+.phy-convert-physical-model-drawer.arco-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-inner {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-inner > * {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-scroll {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-header {
+  flex-shrink: 0;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-content {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.phy-convert-physical-model-drawer.arco-drawer .arco-drawer-footer {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+/* 控件列最大宽度 640px（8×80px 档位），不随页面无限变宽 */
+.app-form-page .arco-form-item-wrapper {
+  max-width: 640px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 控件区内输入类组件拉满可用宽度（上限由上一规则约束） */
+.app-form-page .arco-form-item-control-children {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 带 showWordLimit / suffix 的 Input 外层为 inline-block + 内层 display:table，与 Select、无 group 的 Input 相比易出现左侧数像素不齐。
+   addBefore/addAfter 原为 table-cell；父级改 flex 后需 width:auto + stretch，否则 addon 会收成一条贴在框上沿。 */
+.app-form-page .arco-form-item-control-children > .arco-input-group-wrapper {
+  display: block;
+  width: 100%;
+  vertical-align: top;
+}
+.app-form-page .arco-form-item-control-children > .arco-input-group-wrapper > .arco-input-group {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  /* Arco group 用 line-height:0 配合 table-cell；改 flex 后必须恢复，否则 prefix/addon 高度为 0、字浮在框上沿 */
+  line-height: 1.5715;
+}
+.app-form-page .arco-form-item-control-children > .arco-input-group-wrapper > .arco-input-group > .arco-input-inner-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+.app-form-page .arco-form-item-control-children > .arco-input-group-wrapper > .arco-input-group > .arco-input-group-addbefore,
+.app-form-page .arco-form-item-control-children > .arco-input-group-wrapper > .arco-input-group > .arco-input-group-addafter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: auto;
+  height: auto;
+  align-self: stretch;
+  line-height: 1.5715;
+}
+.app-form-page .arco-input-group-prefix,
+.app-form-page .arco-input-group-suffix,
+.app-form-page .arco-input-prefix,
+.app-form-page .arco-input-suffix {
+  line-height: 1.5715;
+}
+.app-form-page .arco-form-item-control-children > .arco-input,
+.app-form-page .arco-form-item-control-children > .arco-input-number,
+.app-form-page .arco-form-item-control-children > .arco-select,
+.app-form-page .arco-form-item-control-children > .arco-textarea,
+.app-form-page .arco-form-item-control-children > .arco-textarea-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.app-form-page .arco-form-item-control-children > div.relative,
+.app-form-page .arco-form-item-control-children > div.flex {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/**
+ * 校验文案叠在控件与下一项的间距内，不撑开 Form.Item 高度。
+ * 字段间距保持 24px，错误 12/20 文案落在该空隙中。
+ */
+.app-form-page .arco-form-item {
+  margin-bottom: 24px;
+}
+.app-form-page .arco-form-item-control {
+  position: relative;
+}
+.app-form-page .arco-form-item-message {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  margin-top: 2px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 标注需求详情 · 标签表展开行：避免 td 与内层面板双重铺色，仅由面板承担浅蓝底 */
+.annotation-demand-label-expand-table tr.arco-table-expand-content > td.arco-table-td {
+  background-color: transparent !important;
+  vertical-align: top;
+}
+
+/* 详情页只读字段值：最多两行省略，与 DetailFieldValue 配套 */
+.detail-field-value__clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 22px;
+  max-height: 44px;
+}
+
+/* 服务详情页主导航：保留选中 Tab 蓝色 ink；去掉 Tabs 自带通栏底边，避免与页头 Divider 双灰线 */
+.service-detail-page-header-tabs .arco-tabs-header-nav::before {
+  display: none !important;
+}
+
+/* 开发任务：DataX JSON 任务详情（编辑器 + 右侧配置 + 底部运行结果） */
+.dev-task-detail__open-tabs {
+  /* 对齐左侧 Tabs 容器：pt-2(8px) + tabbar(48px) + 底部分割线(1px) = 57px */
+  height: 57px;
+  padding: 8px 16px 0;
+  border-bottom: var(--yb-hairline-w) solid var(--yb-border-2);
+  background: var(--color-bg-2);
+  display: flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+}
+
+/* 顶部“打开任务页签”使用 arco-tabs-card-gutter，仅显示 header */
+.dev-task-open-tabs .arco-tabs-content {
+  display: none;
+}
+.dev-task-open-tabs .arco-tabs-header-wrapper {
+  margin-bottom: 0 !important;
+}
+.dev-task-open-tabs .arco-tabs-header-nav {
+  margin-bottom: 0 !important;
+  height: 48px;
+  display: flex;
+  align-items: flex-end;
+}
+.dev-task-open-tabs .arco-tabs-header {
+  padding: 0;
+}
+.dev-task-open-tabs .arco-tabs-header-nav-line {
+  height: 48px;
+  display: flex;
+  align-items: flex-end;
+}
+.dev-task-open-tabs .arco-tabs-header-nav-line .arco-tabs-header-title {
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  /* 贴齐 open-tabs 容器底部分割线，消除 1px 缝隙 */
+  margin-bottom: -1px;
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-nav-card-gutter {
+  border-bottom: none;
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title {
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 6px 6px 0 0;
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title:hover {
+  background-color: var(--color-fill-2);
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title.arco-tabs-header-title-active {
+  background-color: var(--color-bg-2);
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title .arco-tabs-header-title-close {
+  margin-left: 8px;
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title .arco-tabs-header-title-close svg {
+  width: 12px;
+  height: 12px;
+}
+.dev-task-open-tabs.arco-tabs-card-gutter .arco-tabs-header-title-add {
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+/* (dev-task-open-tabs__extra) 已移除：任务页签行不展示右侧操作区 */
+.dev-task-open-tabs__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 320px;
+}
+.dev-task-open-tabs__icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.dev-task-open-tabs__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+  color: var(--color-text-1);
+}
+
+.dev-task-detail__top {
+  height: 48px;
+  display: flex;
+  align-items: stretch;
+  padding: 0 16px;
+  border-bottom: var(--yb-hairline-w) solid var(--yb-border-2);
+}
+.dev-task-detail__title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--color-text-1);
+}
+.dev-task-detail__status {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--color-text-3);
+}
+.dev-task-detail__icon-btn.arco-btn {
+  padding: 4px !important;
+  height: 24px;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-2);
+}
+.dev-task-detail__icon-btn.arco-btn:hover {
+  background-color: var(--color-fill-2);
+}
+.dev-task-detail__top-divider {
+  width: var(--yb-hairline-w);
+  height: 16px;
+  background: var(--yb-border-2);
+  margin: 0 4px;
+}
+.dev-task-detail__config-btn.arco-btn {
+  height: 28px;
+  padding: 0 12px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.dev-task-detail__editor {
+  background: var(--color-bg-2);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  min-height: 0;
+  min-width: 0;
+}
+/* dev-task-detail__editor-toolbar 已移除：编辑器工具条不展示 */
+.dev-task-detail__editor-surface {
+  background: var(--color-bg-2);
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.dev-task-detail__code {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* IDE 编辑器区（参考截图：左侧行号 + 折叠箭头 + JSON 文本） */
+.dev-task-ide {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-bg-2);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--color-text-1);
+  display: flex;
+  align-items: stretch;
+}
+
+/* 运行中：整区置灰、不可操作（与顶栏 runLogLoading 同步） */
+.dev-task-ide--disabled {
+  position: relative;
+  pointer-events: none;
+  cursor: not-allowed;
+  /* 与正常态区分的浅灰底，避免仅靠透明度看不清 */
+  background: var(--color-fill-1);
+  box-shadow: inset 0 0 0 var(--yb-hairline-w) var(--yb-border-2);
+}
+.dev-task-ide--disabled::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* 轻遮罩 + 微冷灰，让「整区置灰」更明显且仍能辨认代码 */
+  background: color-mix(in srgb, var(--color-fill-3) 38%, transparent);
+  pointer-events: none;
+}
+.dev-task-ide--disabled .dev-task-ide__gutter {
+  position: relative;
+  z-index: 0;
+  color: var(--color-text-4);
+  background: var(--color-fill-2);
+}
+.dev-task-ide--disabled .dev-task-ide__textarea {
+  position: relative;
+  z-index: 0;
+  color: var(--color-text-3);
+  caret-color: transparent;
+}
+/* 草稿快捷键提示在运行中同样再降一档，保持「不可用」感 */
+.dev-task-ide--disabled .dev-task-ide__textarea.dev-task-ide__textarea--shortcut-hint {
+  color: var(--color-text-4);
+}
+
+.dev-task-ide__gutter {
+  width: 44px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  padding: 2px 0;
+  background: var(--color-bg-2);
+  border-right: none;
+  color: var(--color-text-4);
+  user-select: none;
+}
+
+.dev-task-ide__gutter-line {
+  height: 18px;
+  line-height: 18px;
+  padding-right: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.dev-task-ide__textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 2px 12px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font: inherit;
+  line-height: inherit;
+  color: var(--color-text-1);
+  white-space: pre;
+  tab-size: 2;
+  /* 默认隐藏滚动条（hover 时显示），避免占位挤压内容 */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* 新建任务草稿：未编辑时的快捷键说明（参考稿浅色提示） */
+.dev-task-ide__textarea.dev-task-ide__textarea--shortcut-hint {
+  color: var(--color-text-3);
+}
+
+.dev-task-ide__textarea::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.dev-task-ide__textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.22);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.dev-task-ide__textarea:hover {
+  /* Firefox：悬停时显示 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(41, 47, 66, 0.22) transparent;
+}
+
+.dev-task-ide__textarea:hover::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.dev-task-ide__line {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 2px 12px 2px 10px;
+  white-space: pre;
+}
+.dev-task-ide__ln {
+  width: 28px;
+  flex: 0 0 auto;
+  text-align: right;
+  color: var(--color-text-4);
+  user-select: none;
+}
+.dev-task-ide__fold {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-3);
+  cursor: pointer;
+}
+.dev-task-ide__fold:disabled {
+  cursor: default;
+}
+.dev-task-ide__fold--empty {
+  opacity: 0;
+}
+.dev-task-ide__code {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--color-text-2);
+}
+.dev-task-ide__code--closing {
+  color: var(--color-text-3);
+}
+
+/*
+ * 开发任务 · IDE 型详情页 token：
+ * - 业务根节点请同时挂 `dev-task-detail` + `dev-task-ide-root`（见 DevTaskPage）
+ * - 需要覆写稿面尺寸时，只改根节点上的变量即可
+ */
+.dev-task-detail.dev-task-ide-root {
+  --dev-task-right-panel-w: 400px;
+  --dev-task-side-tabs-w: 40px;
+  --dev-task-result-collapsed-h: 48px;
+  --dev-task-result-expanded-h: 240px;
+  --dev-task-version-table-min-w: 840px;
+}
+
+.dev-task-detail__right {
+  /* 总宽 = 内侧面板（--dev-task-right-panel-w）+ 竖向 tabs（--dev-task-side-tabs-w） */
+  width: calc(var(--dev-task-right-panel-w) + var(--dev-task-side-tabs-w));
+  overflow: hidden;
+  background: var(--color-bg-2);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+}
+.dev-task-detail__right--collapsed {
+  /* 收起态仅保留竖向页签条宽度，贴齐最右侧 */
+  width: var(--dev-task-side-tabs-w);
+}
+.dev-task-detail__right--collapsed .dev-task-detail__panel {
+  display: none;
+}
+
+/** 工作流治理编辑：仅节点配置面板，无右侧竖向 IDE 页签 */
+.dev-task-detail__right--node-config-only {
+  width: var(--dev-task-right-panel-w);
+}
+.dev-task-detail__right--node-config-only .dev-task-detail__panel {
+  border-right: none;
+}
+
+.dev-task-detail__panel {
+  /* 展开态：面板与右侧竖向 tabs 之间的分割线 */
+  border-right: var(--yb-hairline-w) solid var(--yb-border-2);
+  min-width: 0;
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dev-task-detail__right-inner {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+/* 分割布局：外层一张卡片，内部左右分栏 */
+.dev-task-detail__split {
+  border: none;
+  border-radius: 0;
+  background: var(--color-bg-2);
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+.dev-task-detail__split-divider {
+  width: var(--yb-hairline-w);
+  background: var(--yb-border-2);
+}
+.dev-task-detail__side-tabs {
+  width: var(--dev-task-side-tabs-w);
+  border-right: none;
+  border-left: none;
+  background: var(--color-bg-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 12px;
+  gap: 16px;
+}
+.dev-task-detail__side-tab {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--color-text-2);
+  user-select: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.dev-task-detail__side-tab--active {
+  color: rgb(var(--primary-6));
+  font-weight: 600;
+}
+.dev-task-detail__panel-head {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px;
+  border-bottom: var(--yb-hairline-w) solid var(--yb-border-2);
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--color-text-1);
+}
+.dev-task-detail__panel-head-left {
+  min-width: 0;
+}
+.dev-task-detail__panel-collapse.arco-btn {
+  padding: 4px !important;
+  height: 24px;
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-2);
+}
+.dev-task-detail__panel-collapse.arco-btn:hover {
+  background-color: var(--color-fill-2);
+}
+.dev-task-detail__panel-head-title {
+  min-width: 0;
+}
+.dev-task-detail__panel-env {
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  border: var(--yb-hairline-w) solid var(--yb-border-2);
+  border-radius: 6px;
+  background: var(--color-bg-2);
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.dev-task-detail__panel-env:hover {
+  border-color: rgb(var(--primary-5));
+}
+.dev-task-detail__panel-env-icon,
+.dev-task-detail__panel-env-caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.dev-task-detail__panel-env-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.dev-task-detail__panel-env-caret svg {
+  width: 12px;
+  height: 12px;
+}
+.dev-task-detail__panel-env-text {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dev-task-detail__panel-body {
+  flex: 1 1 0%;
+  min-height: 0;
+  /* 仅纵向滚动：避免子控件略超宽时出现整块面板横向滚动条；宽表「版本」Tab 仍用内部容器的 overflow-x:auto */
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/*
+ * 开发任务 · 右侧面板「调度运行」：label 列 + 全局 `app-form-page` 控件列 max-width 在窄面板下会挤压 Radio/行内组合。
+ * 策略：本表单去掉控件列 max-width；Radio 与按钮内文案强制不换行；控件列 min-width:0 参与 flex 收缩；
+ * 行内组合用 width:100% + flex-wrap 换行；control-children 用 overflow-x:hidden 避免出现表单项下方横向滚动条。
+ * 勿对 .arco-form-item-control-children 设 overflow-x:auto。
+ * 仅设 overflow-x:hidden 时，规范会把 overflow-y:visible 算成 auto，窄列 + flex 下易出现「控件右侧一条纵向滚动条」；
+ * 故同时显式 overflow-y:hidden（本 Tab 无多行控件区依赖纵向 overflow）。
+ */
+.dev-task-detail__panel-body .dev-task-schedule-run-form.app-form-page .arco-form-item-wrapper {
+  max-width: none;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form.app-form-page .arco-form-item.arco-form-layout-horizontal .arco-form-item-control {
+  min-width: 0;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form.app-form-page .arco-form-item-control-children {
+  min-width: 0;
+  /* 裁掉子树 1px 级超宽，避免出现「紧贴每个表单项下方」的横向滚动条轨道 */
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form .yb-radio-button-group.arco-radio-group.arco-radio-group-type-button {
+  flex-wrap: nowrap;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form .yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button {
+  flex: 0 0 auto;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form .yb-radio-button-group.arco-radio-group.arco-radio-group-type-button .arco-radio-button-inner {
+  white-space: nowrap;
+}
+.dev-task-detail__panel-body .dev-task-schedule-run-form .dev-task-schedule-run-form__inline-row {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+/* RangePicker 根容器参与 flex 收缩，避免双输入框 + 分隔符在窄列下撑出横向溢出 */
+.dev-task-detail__panel-body .dev-task-schedule-run-form .arco-picker-range {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.dev-task-detail__basic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dev-task-detail__basic-meta {
+  padding-top: 12px;
+  border-top: var(--yb-hairline-w) solid var(--yb-border-2);
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--color-text-2);
+}
+
+.dev-task-detail__basic-meta-row {
+  margin-top: 12px;
+}
+
+.dev-task-detail__basic-meta-row:first-child {
+  margin-top: 0;
+}
+
+.dev-task-detail__basic-meta-k {
+  color: var(--color-text-3);
+  margin-bottom: 4px;
+}
+
+.dev-task-detail__basic-meta-v {
+  color: var(--color-text-1);
+}
+.dev-task-detail__panel-section-title {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--color-text-1);
+  margin-bottom: 12px;
+}
+.dev-task-detail__kv-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: var(--yb-hairline-w) dashed var(--yb-border-2);
+}
+.dev-task-detail__kv-row:last-of-type {
+  border-bottom: none;
+}
+.dev-task-detail__kv-k {
+  flex: 0 0 auto;
+  color: var(--color-text-3);
+  font-size: 12px;
+  line-height: 18px;
+}
+.dev-task-detail__kv-v {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+  color: var(--color-text-1);
+  font-size: 12px;
+  line-height: 18px;
+}
+.dev-task-detail__panel-placeholder {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--color-text-3);
+}
+
+.dev-task-version-table {
+  min-width: var(--dev-task-version-table-min-w);
+}
+
+/* 开发任务：编辑器下方「运行结果」收缩面板（左侧编辑器列内） */
+/* 编辑器主区与「运行结果」在列内按 flex 分配高度（避免 absolute 导致父级高度塌成内容高） */
+.dev-task-detail__editor--result-collapsed .dev-task-detail__editor-surface,
+.dev-task-detail__editor--result-expanded .dev-task-detail__editor-surface {
+  flex: 1 1 0%;
+  min-height: 0;
+  height: auto;
+}
+/* 任务编排工作流：无底部运行日志/运行结果条，画布列占满高度 */
+.dev-task-detail__editor--workflow-canvas .dev-task-detail__editor-surface {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+.dev-task-editor-result {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  border-top: var(--yb-hairline-w) solid var(--yb-border-2);
+  background: var(--color-bg-2);
+  display: flex;
+  flex-direction: column;
+  min-height: var(--dev-task-result-collapsed-h);
+  height: var(--dev-task-result-expanded-h);
+}
+.dev-task-editor-result--collapsed {
+  height: var(--dev-task-result-collapsed-h);
+}
+.dev-task-editor-result__header {
+  height: var(--dev-task-result-collapsed-h);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 12px;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.dev-task-editor-result__title {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--color-text-1);
+  position: relative;
+  top: -1px;
+}
+.dev-task-editor-result__toggle.arco-btn {
+  width: 24px;
+  height: 24px;
+  padding: 4px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-2);
+  position: relative;
+  top: -1px;
+}
+.dev-task-editor-result__toggle.arco-btn svg {
+  display: block;
+}
+.dev-task-editor-result__toggle.arco-btn:hover {
+  background-color: var(--color-fill-2);
+}
+.dev-task-editor-result__body {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.service-manage-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis .arco-table-cell-with-sorter > .arco-table-th-item-title,
+.service-detail-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis .arco-table-cell-with-sorter > .arco-table-th-item-title {
+  flex: 0 1 auto !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/*
+ * `TableColumnFilterTitle` / `TableColumnSortTitle`：Arco 在 ellipsis 列给 `.arco-table-th-item-title` 设 flex:1 + nowrap + ellipsis，
+ * 会把内层「标题 + 图标」flex 裁乱或继续顶到列尾；用 :has(.list-table-col-filter-title-root) 仅作用于这两类自定义表头。
+ */
+.service-manage-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis > .arco-table-th-item-title:has(.list-table-col-filter-title-root),
+.service-detail-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis > .arco-table-th-item-title:has(.list-table-col-filter-title-root) {
+  display: flex !important;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 auto !important;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+/*
+ * 详情内表格同时挂 service-detail-table + service-manage-list-table--row48-flex 时：
+ * service-detail-table 对表体 td 的 top 对齐会晚于 service-manage-table 的 middle，需抬权以与列表主规范一致（flex 垂直居中）。
+ */
+.service-detail-table.service-manage-table.service-manage-list-table--row48-flex .arco-table-body .arco-table-td,
+.service-detail-table.service-manage-table.service-manage-list-table--row48-flex tbody .arco-table-td {
+  vertical-align: middle;
+}
+
+/* 数据源管理：标题与 Tab 一体；仅展示 Tab 导航，隐藏无内容的 Tab 内容区 */
+.data-source-manage-header-tabs .arco-tabs-content {
+  display: none;
+}
+/* Tab 导航与下方工具行无缝：去掉 Arco 头部区默认下边距 */
+.data-source-manage-header-tabs .arco-tabs-header-nav {
+  margin-bottom: 0 !important;
+}
+.data-source-manage-header-tabs .arco-tabs-header-wrapper {
+  margin-bottom: 0 !important;
+}
+.data-source-manage-header-tabs .arco-tabs-header-nav-line .arco-tabs-header-title {
+  padding: 8px 0;
+  margin-right: 24px;
+}
+.data-source-manage-header-tabs .arco-tabs-header-nav-line .arco-tabs-header-title:last-of-type {
+  margin-right: 0;
+}
+
+/* 工程 · 数据模型审批：仅「待审批 / 已审批」两枚 Tab 时，导航条宽度随内容收缩，避免 Tab 行在视区内横向拉满导致右侧空白 */
+.model-approval-header-tabs .arco-tabs-header-nav {
+  flex: 0 0 auto !important;
+  width: fit-content !important;
+  max-width: 100%;
+}
+
+/**
+ * 列表/表单/详情区域分隔：色 --yb-border-2，宽 --yb-hairline-w（1px）。
+ * Arco Divider 默认 1px / --color-neutral-3，这里只改粗细并钉死色档。
+ */
+.arco-divider-horizontal {
+  border-bottom-width: var(--yb-hairline-w);
+  border-bottom-color: var(--yb-border-2);
+}
+.arco-divider-vertical {
+  border-left-width: var(--yb-hairline-w);
+  border-left-color: var(--yb-border-2);
+}
+
+/**
+ * 带 Tab 的页头条：底贴 Divider，激活态下划线与分割线对齐（上左右 24、底 0）。
+ * 与 `data-source-manage-header-tabs` 配套用于数据源管理、标准管理、运维实例等。
+ */
+.page-header-with-tabs {
+  padding: 24px 24px 0;
+  box-sizing: border-box;
+}
+
+/* 调用地址：Method Tag + 可换行 URL + 复制按钮。行顶对齐便于 URL 折行时 Tag 贴第一行 */
+.yb-invoke-url-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.yb-invoke-url-text {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  gap: 8px;
+}
+
+.yb-invoke-url-copy-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 22px;
+  line-height: 0;
+}
+
+.yb-invoke-url-copy.arco-btn {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yb-invoke-url-copy.arco-btn .arco-icon {
+  font-size: 14px;
+}
+
+/* 服务详情页：调用地址/接口地址的 method Tag 对齐兜底 */
+.service-detail-page .yb-method-tag.arco-tag,
+.yb-method-tag.arco-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 22px !important;
+  line-height: 22px !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  vertical-align: middle !important;
+}
+/* Tag 默认 .arco-tag-content{flex:1} 在窄高下可能被拉伸；与 14px/22px 正文对齐 */
+.service-detail-page .yb-method-tag.arco-tag .arco-tag-content {
+  flex: 0 1 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 22px !important;
+  font-size: 14px !important;
+}
+
+/*
+ * 内容卡片（看板 KPI / 图表 / 内嵌表；列表页 KPI 同此）。
+ * Arco Card 默认 --border-radius-none（直角）。统一 8px + 1px 结构描边。
+ * 业务页：bordered={false} + yb-content-card。圆角是 8px，不要改成 12px。
+ * 登录卡片、侧导位置选择器浮层不走本 class。
+ */
+.arco-card.yb-content-card {
+  border-radius: var(--yb-radius-8);
+  overflow: hidden;
+  border: var(--yb-hairline-w) solid var(--yb-border-2);
+  box-sizing: border-box;
+}
+
+/*
+ * 卡片列表资源卡（list-page.md §5，对齐 data-demo 应用管理）。
+ * 业务页：bordered={false} + yb-list-card。圆角 12px，不要用 yb-content-card（8px 看板卡）。
+ */
+.arco-card.yb-list-card {
+  width: 100%;
+  cursor: pointer;
+  border-radius: var(--yb-radius-12);
+  border: var(--yb-hairline-w) solid var(--yb-border-2);
+  box-sizing: border-box;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+}
+.arco-card.yb-list-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: rgb(var(--primary-6));
+}
+.arco-card.yb-list-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(var(--primary-6));
+}
+.service-manage-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis .arco-table-cell-with-sorter > .arco-table-th-item-title,
+.service-detail-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis .arco-table-cell-with-sorter > .arco-table-th-item-title {
+  flex: 0 1 auto !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/*
+ * `TableColumnFilterTitle` / `TableColumnSortTitle`：Arco 在 ellipsis 列给 `.arco-table-th-item-title` 设 flex:1 + nowrap + ellipsis，
+ * 会把内层「标题 + 图标」flex 裁乱或继续顶到列尾；用 :has(.list-table-col-filter-title-root) 仅作用于这两类自定义表头。
+ */
+.service-manage-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis > .arco-table-th-item-title:has(.list-table-col-filter-title-root),
+.service-detail-table .arco-table-thead .arco-table-th-item.arco-table-cell-text-ellipsis > .arco-table-th-item-title:has(.list-table-col-filter-title-root) {
+  display: flex !important;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 auto !important;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}

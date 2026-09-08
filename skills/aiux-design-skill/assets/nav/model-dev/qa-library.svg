@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="icon-wrapper" clip-path="url(#clip0_0_176)">
+<g id="tips/close-circle-fill">
+<path id="Vector" fill-rule="evenodd" clip-rule="evenodd" d="M1.66667 10C1.66667 5.39763 5.39763 1.66667 10 1.66667C14.6024 1.66667 18.3333 5.39763 18.3333 10C18.3333 14.6024 14.6024 18.3333 10 18.3333C5.39763 18.3333 1.66667 14.6024 1.66667 10ZM6.76182 7.94044L8.82421 10.0028L6.76182 12.0652L7.94033 13.2437L10.0027 11.1813L12.0651 13.2437L13.2436 12.0652L11.1812 10.0028L13.2436 7.94044L12.0651 6.76193L10.0027 8.82433L7.94033 6.76193L6.76182 7.94044Z" fill="var(--fill-0, #0F131F)"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_176">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>

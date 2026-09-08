@@ -1,0 +1,60 @@
+/**
+ * 应用壳基线。
+ * 与 MinimalAppShell / ProductAppShell 的滚动与 Message 宿主配合使用。
+ *
+ * 壳最小宽 `--yb-layout-min-w`（1280）。视口更窄时必须由 html 横向滚动，
+ * 禁止 html/body/#root 全部 overflow:hidden，否则顶栏右头像会被裁掉一半。
+ *
+ * 若 Tailwind `preflight: false`（避免覆盖 Arco reset），必须在此补全局 `box-sizing: border-box`。
+ * 开启 preflight 时，顶栏 `w-full + px-16` 才能把 padding 算进 100% 宽；
+ * content-box 下 header 会比视口宽出左右 padding，`overflow-clip` 会裁掉头像。
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+body {
+  margin: 0;
+  min-width: var(--yb-layout-min-w);
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--yb-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-width: var(--yb-layout-min-w);
+  height: 100%;
+  overflow: hidden;
+}
+
+.yb-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.yb-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.yb-layout-main-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.yb-layout-main-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

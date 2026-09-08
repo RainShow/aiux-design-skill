@@ -1,0 +1,54 @@
+/** 全局 Message 宿主 */
+/* 全局 Message：固定在内容区顶部中间（对齐截图红框位置） */
+.yb-message-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  z-index: 1100; /* 高于页面内容，低于全局 Modal(1001) 不冲突 */
+  pointer-events: none;
+}
+.yb-message-root .arco-message-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+.yb-message-root .arco-message-wrapper-top {
+  top: 12px;
+}
+
+/*
+ * Arco Notice 在 mouseenter 时会 clearTimeout，mouseleave 才重新计时。
+ * 提示叠在内容区顶栏，光标停在条上就会一直不关。关闭命中，让 duration 正常生效。
+ */
+.yb-message-root .arco-message-wrapper > div,
+.yb-message-root .arco-message,
+.arco-message-wrapper .arco-message {
+  pointer-events: none !important;
+}
+
+/* Message 组件样式兜底：对齐 19155 主题组件页（arco-message-success 等） */
+.yb-message-root .arco-message,
+.arco-message-wrapper .arco-message {
+  padding: 10px 16px;
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--color-neutral-3);
+  background-color: var(--color-bg-popup);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.yb-message-root .arco-message-icon,
+.arco-message-wrapper .arco-message-icon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+.yb-message-root .arco-message-content,
+.arco-message-wrapper .arco-message-content {
+  font-size: 14px;
+  color: var(--color-text-1);
+}
+.yb-message-root .arco-message-success .arco-message-icon,
+.arco-message-wrapper .arco-message-success .arco-message-icon {
+  color: rgb(var(--success-6));
+}

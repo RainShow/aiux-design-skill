@@ -1,0 +1,95 @@
+:root {
+  /* ---- Colors (from Figma variables) ---- */
+  --yb-text-1: var(--文字-text\/color-text-1, #0f131f);
+  --yb-text-2: var(--文字-text\/color-text-2, #292f42);
+  --yb-text-3: var(--文字-text\/color-text-3, #4a5169);
+  --yb-text-4: var(--文字-text\/color-text-4, #9ca3b8);
+  --yb-text-white: var(--文字-text\/white, #ffffff);
+
+  --yb-bg-1: var(--背景色-background\/color-bg-1, #ffffff);
+  --yb-bg-2: var(--背景色-background\/color-bg-2, #ffffff);
+  --yb-bg-4: var(--背景色-background\/color-bg-4, #f5f7fc);
+  --yb-fill-2: var(--填充-fill\/color-fill-2, #f5f7fc);
+  --yb-fill-3: var(--填充-fill\/color-fill-3, #ebeef5);
+
+  /* Arco 最浅档对照；结构线不要用这一档（会显得过浅）。 */
+  --yb-border-1: var(--线条-line\/color-border-1, #ebeef5);
+  /* 结构线色（卡片描边、页框、区域分隔、IDE 分栏）。宽 1px（--yb-hairline-w）；0.5px 在不少屏上看不清。 */
+  --yb-border-2: var(--线条-line\/color-border-2, #dfe2eb);
+  --yb-hairline-w: 1px;
+  /* Figma 键名是 color-border-3，色值却是最浅线 #ebeef5；与 Arco --color-border-3（输入框 #c3c7d4）不是同一档。仅用于选中描边。 */
+  --yb-border-3: var(--线条-LineLine\/color-border-3, #ebeef5);
+  /* 搜索框等控件 idle 边框（与 TOKENS / Figma node 117333:231211 一致） */
+  --yb-border-input-idle: var(--线条-line\/color-border-3, #c3c7d4);
+  --yb-border-4: var(--线条-line\/color-border-4, #9ca3b8);
+
+  --yb-primary-5: var(--品牌色-primary\/primary-5, #4073f5);
+  --yb-primary-6: var(--品牌色-primary\/primary-6, #184ff2);
+  --yb-danger-6: var(--错误色-danger\/danger-6, #ef4444);
+
+  /* ---- Typography ---- */
+  --yb-font-family: ui-sans-serif, system-ui, -apple-system, 'PingFang SC', 'Segoe UI',
+    Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+  /* ---- Effects ---- */
+  /* “阴影/基础投影”: (0,2) blur 8 color #00000014 */
+  --yb-shadow-base: 0 2px 8px 0 rgba(0, 0, 0, 0.08);
+
+  /* 输入框 focus 外环（颜色随主色 token 变化） */
+  --yb-input-focus-ring: 0 0 0 2px color-mix(in srgb, var(--yb-primary-6) 20%, transparent);
+
+  /* 控件高度（与侧导/表单控件对齐） */
+  --yb-control-h-sm: 28px;
+  --yb-control-h-md: 32px;
+  --yb-control-h-lg: 40px;
+
+  /* 禁用态整体弱化（图标与占位同级） */
+  --yb-opacity-disabled: 0.45;
+
+  /* ---- Layout sizes (extracted from node) ---- */
+  --yb-topnav-h: 56px;
+  --yb-side-w: 60px;
+  --yb-avatar: 32px;
+  --yb-icon: 20px;
+  --yb-icon-16: 16px;
+  --yb-menu-item: 48px;
+  --yb-logo-w: 123px;
+  --yb-logo-h: 18px;
+  --yb-logo-area-h: 28px;
+  --yb-badge-dot: 8px;
+  --yb-badge-left: 12px;
+  --yb-badge-top: -3px;
+  --yb-msg-area-w: 16px;
+  /* 含顶导+侧导的业务壳最小宽度（与 ProductAppShell / ProductTopNav 一致） */
+  --yb-layout-min-w: 1280px;
+  /* 设计稿参考高度；勿用于侧栏/主区 min-height，否则视口低于 640px 时会把底栏裁出屏外 */
+  --yb-layout-min-h: 640px;
+
+  /* ---- Spacing scale (extracted from node) ---- */
+  --yb-space-4: 4px;
+  --yb-space-5: 5px;
+  --yb-space-6: 6px;
+  --yb-space-8: 8px;
+  --yb-space-12: 12px;
+  --yb-space-13: 13px;
+  --yb-space-16: 16px;
+  --yb-space-24: 24px;
+
+  /* ---- Radius (extracted from node) ---- */
+  --yb-radius-4: 4px;
+  /* 内容卡片（yb-content-card）、Modal.confirm；数据市场页头搜索等（Figma 全模态 V1.0-0530 · 867:93100） */
+  --yb-radius-8: 8px;
+  /* 卡片列表资源卡（yb-list-card）。看板 KPI 仍用 8px，不要混用 */
+  --yb-radius-12: 12px;
+  --yb-radius-100: 100px;
+
+  /* ---- Font sizes / line heights (extracted from styles) ---- */
+  --yb-fs-10: 10px;
+  --yb-fs-14: 14px;
+  --yb-fs-16: 16px;
+  --yb-fs-18: 18px;
+  --yb-lh-18: 18px;
+  --yb-lh-22: 22px;
+  --yb-lh-24: 24px;
+}
+

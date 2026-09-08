@@ -1,0 +1,461 @@
+/**
+ * Arco 主题 #19155 — 以「主题包语义」优先：
+ * 1) `body` 上对齐 savedTokens 的语义色与主色梯度（与主题站 iframe 一致）；
+ * 2) 对 npm 预编译 dist 与主题 Less 不一致处（Select/Input/DatePicker 默认底/边）做最小补偿。
+ *
+ * 依据：https://arco.design/themes/design/19155/setting/base/Color
+ */
+body:not([arco-theme='dark']) {
+  /* 主色 @primary-1 … @primary-7 → --arcoblue-*（供 rgb(var(--primary-6))) 等使用） */
+  --arcoblue-1: 237, 245, 255;
+  --arcoblue-2: 190, 213, 253;
+  --arcoblue-3: 145, 183, 250;
+  --arcoblue-4: 106, 149, 246;
+  --arcoblue-5: 64, 115, 245;
+  --arcoblue-6: 24, 79, 242;
+  --arcoblue-7: 16, 55, 201;
+  --arcoblue-8: 7, 44, 166;
+  --arcoblue-9: 3, 26, 121;
+  --arcoblue-10: 0, 13, 77;
+
+  /* 语义色（@color-text / fill / border / bg）；Select 默认态见下方组件覆盖（bg-2 + border-3） */
+  --color-text-1: rgb(15, 19, 31);
+  --color-text-2: rgb(41, 47, 66);
+  --color-text-3: rgb(100, 108, 133);
+  --color-text-4: rgb(156, 163, 184);
+
+  --color-fill-1: rgb(250, 251, 255);
+  --color-fill-2: rgb(245, 247, 252);
+  --color-fill-3: rgb(235, 238, 245);
+  --color-fill-4: rgb(195, 199, 212);
+
+  --color-border-1: rgb(235, 238, 245);
+  --color-border-2: rgb(223, 226, 235);
+  --color-border-3: rgb(195, 199, 212);
+  --color-border-4: rgb(156, 163, 184);
+
+  --color-bg-1: #ffffff;
+  --color-bg-2: #ffffff;
+  --color-bg-3: #ffffff;
+  --color-bg-4: #ffffff;
+  --color-bg-5: #ffffff;
+
+  /* 与默认 arco 结构一致：浅主色叠在 rgb(var(--primary-*)) 上 */
+  --color-primary-light-1: rgb(var(--primary-1));
+  --color-primary-light-2: rgb(var(--primary-2));
+  --color-primary-light-3: rgb(var(--primary-3));
+  --color-primary-light-4: rgb(var(--primary-4));
+
+  /**
+   * 圆角：侧栏/Figma 控件为 4px；dist 里 Select 用 --border-radius-small(2px)。
+   * 仅抬「小圆角」一档，与主题站常见配置及 --yb-radius-4 对齐。
+   */
+  --border-radius-small: 4px;
+}
+
+/**
+ * 触发器类组件：主题 #19155 在组件层把默认态设为 color-bg-2 + color-border-3，
+ * hover 边框 primary-5；而 npm 预编译的 arco.css 仍写 fill-2 + 透明边，必须后覆盖。
+ * （savedTokens 中 @select-color-bg_default / @select-color-border_default 等；
+ * DatePicker / RangePicker / TimePicker 触发器同为 `.arco-picker`）
+ */
+body:not([arco-theme='dark']) .arco-select:not(.arco-select-disabled):not(.arco-select-focused):not(.arco-select-open):not(.arco-select-error) .arco-select-view,
+body:not([arco-theme='dark'])
+  .arco-tree-select:not(.arco-tree-select-disabled):not(.arco-tree-select-focused)
+  .arco-tree-select-view,
+body:not([arco-theme='dark'])
+  .arco-cascader:not(.arco-cascader-disabled):not(.arco-cascader-focused)
+  .arco-cascader-view {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-border-3);
+}
+
+/* 激活态（聚焦/展开）由 arco.css 控制：不要被默认态覆盖 */
+body:not([arco-theme='dark']) .arco-select:not(.arco-select-disabled):not(.arco-select-error).arco-select-focused .arco-select-view,
+body:not([arco-theme='dark']) .arco-select:not(.arco-select-disabled):not(.arco-select-error).arco-select-open .arco-select-view {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-6));
+}
+
+body:not([arco-theme='dark'])
+  .arco-tree-select:not(.arco-tree-select-disabled).arco-tree-select-focused
+  .arco-tree-select-view,
+body:not([arco-theme='dark'])
+  .arco-cascader:not(.arco-cascader-disabled).arco-cascader-focused
+  .arco-cascader-view {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-6));
+}
+
+body:not([arco-theme='dark'])
+  .arco-select:not(.arco-select-disabled):not(.arco-select-focused):not(.arco-select-error):hover
+  .arco-select-view,
+body:not([arco-theme='dark'])
+  .arco-tree-select:not(.arco-tree-select-disabled):not(.arco-tree-select-focused):hover
+  .arco-tree-select-view,
+body:not([arco-theme='dark'])
+  .arco-cascader:not(.arco-cascader-disabled):not(.arco-cascader-focused):hover
+  .arco-cascader-view {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+}
+
+/**
+ * DatePicker / RangePicker / TimePicker 触发器：与 Select/Input 同一套默认态。
+ * dist `.arco-picker` 为 fill-2 + 透明边，会与列表工具行白底描边控件并排时发灰、无框。
+ */
+body:not([arco-theme='dark'])
+  .arco-picker:not(.arco-picker-disabled):not(.arco-picker-error):not(.arco-picker-focused) {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-border-3);
+}
+
+body:not([arco-theme='dark'])
+  .arco-picker:not(.arco-picker-disabled):not(.arco-picker-error):not(.arco-picker-focused):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+}
+
+body:not([arco-theme='dark'])
+  .arco-picker.arco-picker-focused:not(.arco-picker-disabled):not(.arco-picker-error),
+body:not([arco-theme='dark'])
+  .arco-picker.arco-picker-focused:not(.arco-picker-disabled):not(.arco-picker-error):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-6));
+}
+
+body:not([arco-theme='dark']) .arco-picker.arco-picker-error:not(.arco-picker-disabled),
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-picker:not(.arco-picker-disabled),
+body:not([arco-theme='dark']) .arco-picker.arco-picker-error:not(.arco-picker-disabled):hover,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-picker:not(.arco-picker-disabled):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--danger-6));
+}
+
+body:not([arco-theme='dark']) .arco-picker.arco-picker-disabled,
+body:not([arco-theme='dark']) .arco-picker.arco-picker-disabled:hover {
+  background-color: var(--color-fill-2);
+  border: 1px solid var(--color-border-3);
+}
+
+/** Input 默认态与主题站 Input 一致（下拉内 SearchBox 等）；error 走下方 danger 边，勿盖掉 */
+body:not([arco-theme='dark']) .arco-input:not(:disabled):not(.arco-input-disabled):not(.arco-input-error) {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-border-3);
+}
+
+body:not([arco-theme='dark']) .arco-input:not(:disabled):not(.arco-input-disabled):not(.arco-input-error):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+}
+
+/** 带 prefix / suffix 时边框在 inner-wrapper 上，需单独还原 */
+body:not([arco-theme='dark'])
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error) {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-border-3);
+}
+
+body:not([arco-theme='dark'])
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error):not(
+    .arco-input-inner-wrapper-focus
+  ):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+}
+
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-focus:not(.arco-input-inner-wrapper-disabled),
+body:not([arco-theme='dark'])
+  .arco-input-inner-wrapper.arco-input-inner-wrapper-focus:hover:not(.arco-input-inner-wrapper-disabled):not(
+    .arco-input-inner-wrapper-error
+  ),
+body:not([arco-theme='dark']) .arco-textarea.arco-textarea-focus:not(.arco-textarea-disabled),
+body:not([arco-theme='dark']) .arco-textarea:focus:not(:disabled):not(.arco-textarea-disabled) {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-6));
+  box-shadow: 0 0 0 0 var(--color-primary-light-2);
+}
+
+/**
+ * TextArea 默认态与主题站 Input/TextArea 一致（与上方 Input 覆盖保持一致）
+ * 说明：Arco 的 textarea 本体类名是 `.arco-textarea`，默认态/hover 需要单独补齐，否则仍走 dist 默认样式。
+ */
+body:not([arco-theme='dark']) .arco-textarea:not(:disabled):not(.arco-textarea-disabled):not(.arco-textarea-error) {
+  background-color: var(--color-bg-2);
+  border: 1px solid var(--color-border-3);
+}
+
+body:not([arco-theme='dark']) .arco-textarea:not(:disabled):not(.arco-textarea-disabled):not(.arco-textarea-error):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+}
+
+/**
+ * 校验错误态：主题 19155 `@input-color-bg_error` / `@form-color-bg_error` 均为 `--color-bg-2`。
+ * 只覆盖 danger 边、不写底色时，dist 默认会铺 `--color-danger-light-1` 粉底。
+ */
+body:not([arco-theme='dark']) .arco-input.arco-input-error:not(:disabled):not(.arco-input-disabled),
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-input:not(:disabled):not(.arco-input-disabled),
+body:not([arco-theme='dark']) .arco-input.arco-input-error:not(:disabled):not(.arco-input-disabled):hover,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-input:not(:disabled):not(.arco-input-disabled):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--danger-6));
+}
+
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-error,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled),
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-error:hover,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--danger-6));
+}
+
+body:not([arco-theme='dark']) .arco-textarea.arco-textarea-error:not(:disabled):not(.arco-textarea-disabled),
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-textarea:not(:disabled):not(.arco-textarea-disabled),
+body:not([arco-theme='dark']) .arco-textarea.arco-textarea-error:not(:disabled):not(.arco-textarea-disabled):hover,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-textarea:not(:disabled):not(.arco-textarea-disabled):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--danger-6));
+}
+
+body:not([arco-theme='dark']) .arco-select-error:not(.arco-select-disabled) .arco-select-view,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-select:not(.arco-select-disabled) .arco-select-view,
+body:not([arco-theme='dark']) .arco-select-error:not(.arco-select-disabled):hover .arco-select-view,
+body:not([arco-theme='dark']) .arco-form-item-status-error .arco-select:not(.arco-select-disabled):hover .arco-select-view {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--danger-6));
+}
+
+body:not([arco-theme='dark']) .arco-input-inner-wrapper .arco-input:not(:disabled):not(.arco-input-disabled),
+body:not([arco-theme='dark']) .arco-input-inner-wrapper .arco-input:not(:disabled):not(.arco-input-disabled):hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/**
+ * Input 禁用态：对齐主题站（fill-2 底 + border-3 边 + text-4 字）。
+ * 说明：dist 默认禁用态会被主题包/业务覆盖链路影响，这里显式兜底。
+ */
+body:not([arco-theme='dark']) .arco-input:disabled,
+body:not([arco-theme='dark']) .arco-input.arco-input-disabled {
+  background-color: var(--color-fill-2);
+  border: 1px solid var(--color-border-3);
+  color: var(--color-text-4);
+}
+
+body:not([arco-theme='dark']) .arco-input:disabled::placeholder,
+body:not([arco-theme='dark']) .arco-input.arco-input-disabled::placeholder {
+  color: var(--color-text-4);
+}
+
+/* 带 prefix/suffix 的禁用态：边框/底色在 inner-wrapper 上 */
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-disabled {
+  background-color: var(--color-fill-2);
+  border: 1px solid var(--color-border-3);
+}
+
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-disabled .arco-input,
+body:not([arco-theme='dark']) .arco-input-inner-wrapper.arco-input-inner-wrapper-disabled .arco-input::placeholder {
+  color: var(--color-text-4);
+}
+
+/* TextArea 禁用态：与 Input 禁用态一致 */
+body:not([arco-theme='dark']) .arco-textarea:disabled,
+body:not([arco-theme='dark']) .arco-textarea.arco-textarea-disabled {
+  background-color: var(--color-fill-2);
+  border: 1px solid var(--color-border-3);
+  color: var(--color-text-4);
+}
+
+body:not([arco-theme='dark']) .arco-textarea:disabled::placeholder,
+body:not([arco-theme='dark']) .arco-textarea.arco-textarea-disabled::placeholder {
+  color: var(--color-text-4);
+}
+
+/** Button 次要按钮（secondary）：对齐主题站默认白底+灰边 */
+body:not([arco-theme='dark']) .arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading) {
+  background-color: var(--color-bg-2);
+  border-color: var(--color-border-3);
+  color: var(--color-text-2);
+}
+
+body:not([arco-theme='dark']) .arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):hover {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-5));
+  color: rgb(var(--primary-6));
+}
+
+body:not([arco-theme='dark']) .arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):active {
+  background-color: var(--color-bg-2);
+  border-color: rgb(var(--primary-6));
+}
+
+/** Button 禁用态（arco-btn-disabled）：对齐主题站 disabled token */
+body:not([arco-theme='dark']) .arco-btn.arco-btn-disabled,
+body:not([arco-theme='dark']) .arco-btn.arco-btn-disabled:hover,
+body:not([arco-theme='dark']) .arco-btn.arco-btn-disabled:active {
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* secondary 禁用：fill-2 底 + border-3 边 + text-4 字 */
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-disabled,
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-disabled:hover,
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-disabled:active {
+  background-color: var(--color-fill-2);
+  border-color: var(--color-border-3);
+  color: var(--color-text-4);
+}
+
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-disabled .arco-icon,
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-disabled svg {
+  color: var(--color-text-4);
+}
+
+/* hover 时内部图标/文字跟随 primary-6 */
+body:not([arco-theme='dark']) .arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):hover .arco-icon,
+body:not([arco-theme='dark']) .arco-btn-secondary:not(.arco-btn-disabled):not(.arco-btn-loading):hover svg {
+  color: rgb(var(--primary-6));
+}
+
+/** 图标按钮最小宽度：对齐 32px 触控热区（默认 size=default） */
+body:not([arco-theme='dark']) .arco-btn-secondary.arco-btn-size-default.arco-btn-icon-only {
+  min-width: 32px;
+}
+
+/* 工作区选择下拉内容已切回 Tree：无需对 Menu 做兜底覆盖 */
+
+/** 数据市场页头搜索框：输入与占位强制左对齐（用外层 wrap 命中，避免依赖子树根 className） */
+body:not([arco-theme='dark']) .data-market-hero-search-wrap .arco-input-inner-wrapper input.arco-input {
+  text-align: left !important;
+  direction: ltr;
+}
+
+/**
+ * 数据市场 Hero 搜索边框：
+ * - 用 `#root` 抬一层 ID 权重，避免被主题 114/125 或 dist 的叠层压掉；
+ * - 用 `wrap > .arco-input-group-wrapper` 对齐 Arco Input（needWrapper）DOM，不依赖 `data-market-hero-search`
+ *   是否与 `arco-input-group-wrapper` 同节点（类名合并/顺序异常时原先双类锚点会整段失效 → 浅灰默认边）。
+ * - 激活与「激活+悬停」均与未激活悬停同色 primary-5，并去掉聚焦外发光。
+ */
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:focus-within
+  > .arco-input-group-wrapper
+  .arco-input-group
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error),
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:focus-within
+  > .arco-input-group-wrapper
+  .arco-input-group
+  .arco-input-inner-wrapper.arco-input-inner-wrapper-focus:hover:not(.arco-input-inner-wrapper-disabled):not(
+    .arco-input-inner-wrapper-error
+  ),
+/* 兼容：若外层曾插入节点导致非「直接子级」，保留原 descendant 链 */
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:focus-within
+  .data-market-hero-search.arco-input-group-wrapper
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error),
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:focus-within
+  .data-market-hero-search.arco-input-group-wrapper
+  .arco-input-inner-wrapper.arco-input-inner-wrapper-focus:hover:not(.arco-input-inner-wrapper-disabled):not(
+    .arco-input-inner-wrapper-error
+  ) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: rgb(var(--primary-5)) !important;
+  background-color: var(--color-bg-2) !important;
+  box-shadow: none !important;
+}
+
+/** 未聚焦时悬停：与 119–123 行同色 */
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:not(:focus-within):hover
+  > .arco-input-group-wrapper
+  .arco-input-group
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error):not(
+    .arco-input-inner-wrapper-focus
+  ),
+body:not([arco-theme='dark'])
+  #root
+  .data-market-hero-search-wrap:not(:focus-within):hover
+  .data-market-hero-search.arco-input-group-wrapper
+  .arco-input-inner-wrapper:not(.arco-input-inner-wrapper-disabled):not(.arco-input-inner-wrapper-error):not(
+    .arco-input-inner-wrapper-focus
+  ) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: rgb(var(--primary-5)) !important;
+  background-color: var(--color-bg-2) !important;
+  box-shadow: none !important;
+}
+
+/**
+ * Modal.confirm 使用 Arco `simple`。对齐基础组件 v2.1「确认对话框」
+ *（Figma 7nv7dPQzjdi5WAxs6XGsMF · 337138:23069 / 329850:17001）。
+ * dist 默认是 464 宽、标题/按钮居中、图标 18、正文顶齐图标，看起来像「调错了组件」。
+ *
+ * 结构：p-20、列 gap-16；标题行图标 20 + gap-8；正文 pl-28 与标题文字齐平；
+ * 页脚 flex gap-8 右对齐，按钮 min-width 72。
+ */
+body:not([arco-theme='dark']) .arco-modal-simple {
+  width: 400px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-header {
+  margin-bottom: 8px;
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-title {
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--color-text-1);
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-title > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-title .arco-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  margin-right: 0;
+  vertical-align: unset;
+  flex-shrink: 0;
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-content {
+  padding: 0 0 0 28px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--color-text-2);
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: right;
+}
+
+body:not([arco-theme='dark']) .arco-modal-simple .arco-modal-footer > .arco-btn {
+  margin-left: 0;
+  min-width: 72px;
+}

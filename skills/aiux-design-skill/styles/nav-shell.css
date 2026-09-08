@@ -1,0 +1,202 @@
+/** 导航壳滚动条等 */
+.side-nav-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.side-nav-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.side-nav-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.side-nav-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+
+.side-nav-scroll:hover {
+  scrollbar-color: rgba(41, 47, 66, 0.25) transparent; /* text-2 的弱化 */
+}
+.side-nav-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.25);
+}
+
+/* 功能全景浮层：滚动条仅在悬停整块面板时显示 */
+.side-nav-overview-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.side-nav-overview-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.side-nav-overview-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.side-nav-overview-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 999px;
+}
+.side-nav-overview-panel:hover .side-nav-overview-scroll {
+  scrollbar-color: rgba(41, 47, 66, 0.25) transparent;
+}
+.side-nav-overview-panel:hover .side-nav-overview-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(41, 47, 66, 0.25);
+}
+
+/**
+ * 功能全景叶子：默认 #23293b，悬停 --link-6。
+ * 必须写在 CSS 里；行内 `color` 会压过 Tailwind `hover:text-*`。
+ */
+.side-nav-overview-link {
+  color: #23293b;
+  font-family: var(--yb-font-family);
+}
+.side-nav-overview-link:hover,
+.side-nav-overview-link:focus-visible {
+  color: rgb(var(--link-6));
+}
+
+/* 位置选择器下拉：Card 提供白底圆角，去掉多余内边距 */
+.org-select-droplist.arco-card {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/**
+ * 「按空间」选项对齐 Figma dropdown-menu item（336214:50515）：
+ * 高 36、px-12 py-7、项间距 0、图标 16 + gap 8；悬停/选中 fill-2，文案保持 text-2。
+ * Arco Menu 默认是 40 高 + margin-bottom 4 + inner 4×8，会又高又稀、左缩进偏大。
+ */
+.org-select-droplist .arco-menu {
+  background: transparent;
+}
+
+.org-select-droplist .arco-menu-inner {
+  padding: 0;
+}
+
+.org-select-droplist .arco-menu-vertical .arco-menu-item {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 36px;
+  margin-bottom: 0;
+  padding: 7px 12px;
+  line-height: 22px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-2);
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.org-select-droplist .arco-menu-vertical .arco-menu-item:hover,
+.org-select-droplist .arco-menu-vertical .arco-menu-item.arco-menu-selected,
+.org-select-droplist .arco-menu-light .arco-menu-item.arco-menu-selected,
+.org-select-droplist .arco-menu-light .arco-menu-item:hover {
+  color: var(--color-text-2);
+  font-weight: 400;
+  background-color: var(--color-fill-2);
+}
+
+.org-select-droplist .arco-menu-vertical .arco-menu-item .arco-icon {
+  margin-right: 0;
+}
+
+/**
+ * 「按组织」树：每层只步进 16px（缩进块 = 箭头宽，无额外 margin）。
+ * 叶子文件夹放在 switcher 位，与父级箭头对齐；悬停/选中铺满整行。
+ */
+.org-select-droplist .arco-tree {
+  width: 100%;
+}
+
+.org-select-droplist .arco-tree-node {
+  align-items: center;
+  width: 100%;
+  padding-left: 0;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.org-select-droplist .arco-tree-node-switcher,
+.org-select-droplist .arco-tree-node-indent-block {
+  width: 16px;
+  margin-right: 0;
+  flex-shrink: 0;
+}
+
+.org-select-droplist .arco-tree-node-switcher {
+  height: 36px;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.org-select-droplist .arco-tree-node-indent-block {
+  height: 36px;
+}
+
+/* showLine 只为了让叶子渲染 switcher；竖线不要画出来 */
+.org-select-droplist .arco-tree-show-line .arco-tree-node-indent-block::before,
+.org-select-droplist .arco-tree-show-line .arco-tree-node-is-leaf:not(.arco-tree-node-is-tail) .arco-tree-node-indent::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 自定义右/下箭头，禁止 Arco 默认 rotate(-90deg) */
+.org-select-droplist .arco-tree-node-switcher-icon svg,
+.org-select-droplist .arco-tree-node-switcher-icon img {
+  transform: none !important;
+}
+
+.org-select-droplist .arco-tree-node-is-leaf .arco-icon-hover {
+  width: 16px;
+  height: 16px;
+}
+
+.org-select-droplist .arco-tree-node-title,
+.org-select-droplist .arco-tree-node-title-block {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 7px 8px 7px 0;
+  margin-left: 0;
+  font-weight: 400;
+  color: var(--color-text-2);
+  background: transparent;
+}
+
+.org-select-droplist .arco-tree-node:hover,
+.org-select-droplist .arco-tree-node-selected {
+  background-color: var(--color-fill-2);
+}
+
+.org-select-droplist .arco-tree-node-title:hover,
+.org-select-droplist .arco-tree-node-selected .arco-tree-node-title,
+.org-select-droplist .arco-tree-node-selected .arco-tree-node-title:hover {
+  background-color: transparent;
+  color: var(--color-text-2);
+  font-weight: 400;
+}
+
+/**
+ * 底栏「创建工作空间」：默认正文色，不要链接蓝；悬停切主色。
+ * 外链图标用 currentColor，随按钮着色。
+ */
+.org-select-create-btn.arco-btn-text {
+  height: auto;
+  padding: 0;
+  color: var(--color-text-1);
+}
+.org-select-create-btn.arco-btn-text:not(:disabled):hover,
+.org-select-create-btn.arco-btn-text:not(:disabled):active {
+  color: rgb(var(--primary-6));
+  background-color: transparent;
+}

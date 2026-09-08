@@ -1,0 +1,18 @@
+{
+  // 仅给在本目录打开 .tsx 消红线。不要拷到业务仓库。必须放在 scripts/ 下，打开子目录模板时才能被编辑器发现。
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "include": ["./**/*.ts", "./**/*.tsx", "./env.d.ts"],
+  "exclude": ["node_modules"]
+}
