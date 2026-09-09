@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Form, Input } from '@arco-design/web-react'
 import { IconLock, IconUser } from '@arco-design/web-react/icon'
 import { TopNavBrandLogo, PLATFORM_PRODUCT_NAME } from '../components/TopNavBrandLogo'
-import { AUTH_DEMO_SESSION_KEY } from '../patterns/authDemo'
+import { writeDemoAuthed } from '../patterns/authDemo'
 import {
   LOGIN_AUX_LINK_GAP_PX,
   LOGIN_BRAND_GRADIENT,
@@ -11,8 +11,10 @@ import {
   LOGIN_CARD_BG,
   LOGIN_CARD_PAD_CLASS,
   LOGIN_CARD_RADIUS_CLASS,
+  LOGIN_DESKTOP_MAIN_CLASS,
   LOGIN_FOOTER_PAD_CLASS,
   LOGIN_FORM_STACK_GAP_CLASS,
+  LOGIN_ROOT_MIN_W_CLASS,
 } from '../patterns/loginPageLayout'
 import { LoginPageBackground } from './LoginPageBackground'
 import { globalMessage } from '../patterns/globalMessage'
@@ -26,7 +28,7 @@ type LoginValues = {
 
 /** 演示环境固定凭据 */
 const DEMO_USERNAME = 'admin'
-const DEMO_PASSWORD = '88888888'
+const DEMO_PASSWORD = 'admin'
 
 /** 登录页平台名称 */
 const LOGIN_PLATFORM_NAME = PLATFORM_PRODUCT_NAME
@@ -62,7 +64,7 @@ export function LoginPage() {
     setLoading(true)
     try {
       await new Promise((r) => setTimeout(r, 450))
-      sessionStorage.setItem(AUTH_DEMO_SESSION_KEY, '1')
+      writeDemoAuthed(true)
       globalMessage.success('登录成功')
       navigate('/', { replace: true })
     } finally {
@@ -75,16 +77,19 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative box-border flex h-full max-w-full min-h-0 w-full flex-col overflow-x-hidden">
+    <div
+      className={`relative box-border flex h-full min-h-0 w-full flex-col overflow-x-hidden ${LOGIN_ROOT_MIN_W_CLASS}`}
+    >
       <LoginPageBackground />
 
       <header className={`absolute z-10 ${LOGIN_BRAND_INSET_CLASS}`}>
         <TopNavBrandLogo platformName={LOGIN_PLATFORM_NAME} />
       </header>
 
-      <main className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden">
-        {/* 桌面：边距 12.5% / 顶距 22.625vh / 列比 29.22:8.28:37.5 — 见 loginPageLayout */}
-        <div className="hidden min-h-0 w-full max-w-full min-w-0 flex-1 grid-cols-[29.22fr_8.28fr_37.5fr] overflow-x-hidden px-[12.5%] pt-[22.625vh] lg:grid lg:items-start">
+      <main
+        className={`relative z-10 flex min-h-0 w-full flex-1 flex-col overflow-x-hidden ${LOGIN_ROOT_MIN_W_CLASS}`}
+      >
+        <div className={LOGIN_DESKTOP_MAIN_CLASS}>
           <section className="min-w-0 pt-[2.99vh]">
             <p
               className="bg-clip-text text-[32px] font-semibold leading-[1.3] text-transparent"
@@ -104,20 +109,6 @@ export function LoginPage() {
 
           <section
             className={`box-border min-h-[54.75vh] min-w-0 w-full max-w-[480px] overflow-hidden ${LOGIN_CARD_RADIUS_CLASS} ${LOGIN_CARD_PAD_CLASS}`}
-            style={{ backgroundColor: LOGIN_CARD_BG }}
-          >
-            <LoginFormCardContent
-              form={form}
-              loading={loading}
-              onSubmit={handleSubmit}
-              onPlaceholderAction={handlePlaceholderAction}
-            />
-          </section>
-        </div>
-
-        <div className="flex flex-1 flex-col items-center justify-center px-6 py-20 lg:hidden">
-          <section
-            className={`box-border w-full max-w-[480px] overflow-hidden ${LOGIN_CARD_RADIUS_CLASS} ${LOGIN_CARD_PAD_CLASS}`}
             style={{ backgroundColor: LOGIN_CARD_BG }}
           >
             <LoginFormCardContent
@@ -148,7 +139,7 @@ type LoginFormCardContentProps = {
   onPlaceholderAction: (label: string) => void
 }
 
-/** 登录卡片表单区（桌面/移动复用） */
+/** 登录卡片表单区 */
 function LoginFormCardContent({
   form,
   loading,

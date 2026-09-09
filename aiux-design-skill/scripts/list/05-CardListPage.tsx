@@ -6,7 +6,7 @@ import { ListTableStatusDot, STATUS_DOT_COLOR } from '../components/ListTableSta
 import { PageLevelEmpty } from '../components/PageLevelEmpty'
 import { SearchWithRefresh } from '../components/SearchBox'
 import { globalMessage } from '../patterns/globalMessage'
-import { LIST_DEFAULT_PAGE_SIZE } from '../patterns/listPageLayout'
+import { LIST_CARD_PAGE_SIZE_3COL } from '../patterns/listPageLayout'
 
 /**
  * 卡片列表。规范：`references/list-page.md` §5。
@@ -88,7 +88,7 @@ const DEMO_ROWS: Row[] = [
   },
 ]
 
-const DEFAULT_PAGE_SIZE = LIST_DEFAULT_PAGE_SIZE
+const DEFAULT_PAGE_SIZE = LIST_CARD_PAGE_SIZE_3COL
 
 function ListCardAppIcon() {
   return (

@@ -98,6 +98,10 @@ export function ProductAppShell({
     if (isAuthed && isLogin) navigate('/', { replace: true })
   }, [isAuthed, isLogin, loginPath, navigate])
 
+  useEffect(() => {
+    if (config.platformName) document.title = config.platformName
+  }, [config.platformName])
+
   const dualRailKey =
     config.resolveDualRailKey?.(pathname) ?? config.dual?.rail[0]?.key ?? 'home'
   const dualSecondKey = config.resolveDualSecondKey?.(pathname) ?? null
@@ -118,7 +122,7 @@ export function ProductAppShell({
     return (
       <div
         className={[
-          'flex h-[100dvh] w-full min-h-0 flex-col overflow-hidden text-[color:var(--yb-text-2)]',
+          'flex h-[100dvh] w-full min-h-0 min-w-[var(--yb-layout-min-w)] flex-col overflow-hidden text-[color:var(--yb-text-2)]',
           className,
         ]
           .filter(Boolean)

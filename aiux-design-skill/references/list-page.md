@@ -1,6 +1,6 @@
 # 列表页
 
-企业中后台列表：默认用 Arco `Table` 一屏扫完记录；卡片墙（广场 / 应用管理）走 §5，不要先出表再改。
+企业中后台列表：默认用 Arco `Table` 一屏扫完记录；卡片墙（广场 / 资源卡网格）走 §5；单列横向内容卡走 §6。不要先出表再改。
 
 ## 目录
 
@@ -12,6 +12,7 @@
 | [3. 带 Tab + 48px 表](#3-带-tab-页头--48px-主表变体) | 页头同 §2，表体仍用 §1 的 48px |
 | [4. 左树右表](#4-带左侧目录树的列表变体) | **仅**稿面明确要左树时 |
 | [5. 卡片列表](#5-卡片列表) | 搜索 + 三列资源卡 + 外置分页。参考 data-demo「应用管理」 |
+| [6. 单列横向卡片](#6-单列横向卡片列表) | 标题操作区 + 标签筛选 + 左文右图内容卡。参考资产中心 / 分页浏览 |
 
 相关：[form-page.md](form-page.md)（创建/编辑与 `state.from`）、[detail-page.md](detail-page.md)、[empty-state.md](empty-state.md)。
 
@@ -19,7 +20,7 @@
 
 ## 意图 / 何时用 / 资产
 
-**意图**：高频扫描与批量处置用表；资源广场 / 应用卡片墙用 §5，不要用看板 KPI 卡冒充。
+**意图**：高频扫描与批量处置用表；资源广场 / 应用卡片墙用 §5；资产中心 / 分页浏览用 §6。不要用看板 KPI 卡冒充。
 
 **何时用**
 
@@ -29,11 +30,13 @@
 | 页头一级分类是 Arco line Tabs，主列是固定双行 | §2（64px 表） |
 | 页头有 Tabs，表体仍要 48px 单行 | §3 |
 | 用户或稿面**写了**左侧目录 | §4 |
-| 用户说「卡片列表 / 卡片墙 / 网格」；或页面名含「广场」且没说要表；或稿面是资源卡片网格（如应用管理） | §5 |
+| 用户说「卡片列表 / 卡片墙 / 网格」；或页面名含「广场」且没说要表；或稿面是资源卡片网格 | §5 |
+| 用户说「单列横向卡片 / 分页浏览 / 内容卡」；或稿面是左文右图、一排一条（如资产中心） | §6 |
 | 不确定表还是卡 | **先问一句**，不要先出表 |
+| 不确定三列资源卡还是横向内容卡 | **先问一句**，不要先出 §5 再改 |
 | 看板 / KPI / 指标磁贴 | 不要用本文，走 [dashboard-page.md](dashboard-page.md) |
 
-页面名叫「服务管理」、或表里有「类型」列，**不是**加左树的信号。名字含「管理」也**不是**走表的信号——应用管理在稿面上就是 §5。
+页面名叫「服务管理」、或表里有「类型」列，**不是**加左树的信号。名字含「管理」也**不是**走表或走卡的信号：提示词是搜索表 + 增删改查（如「应用管理」列表）走 §1；用户说卡片墙 / 广场 / 稿面是资源卡网格才走 §5。
 
 **资产（Skill 内，换电脑可复现）**
 
@@ -47,7 +50,7 @@
 | 名称列 class | `scripts/patterns/listTableNameLink.ts` |
 | 表格空态 | `scripts/patterns/listTableNoDataElement.tsx` |
 | 卡片列表皮肤 | `styles/page-layout.css`（`.yb-list-card` 12px；**不要**用 `yb-content-card`） |
-| 整页起步模板 | `scripts/list/01-BasicListPage.tsx`（§1 无树）；`02-TabDoubleRowListPage.tsx`（§2）；`03-TabRow48ListPage.tsx`（§3）；`04-TreeListPage.tsx`（§4）；`05-CardListPage.tsx`（§5）。表模板只换列、数据、path；卡片模板只换字段、数据、path。默认每页 `LIST_DEFAULT_PAGE_SIZE`（20），不要写成 6 或 10 |
+| 整页起步模板 | `scripts/list/01-BasicListPage.tsx`（§1 无树）；`02-TabDoubleRowListPage.tsx`（§2）；`03-TabRow48ListPage.tsx`（§3）；`04-TreeListPage.tsx`（§4）；`05-CardListPage.tsx`（§5 三列资源卡）；`06-HorizontalCardListPage.tsx`（§6 单列横向卡）。表模板只换列、数据、path；卡片模板只换字段、数据、path。表格默认每页 `LIST_DEFAULT_PAGE_SIZE`（10）；卡片 1/2 列 10、3 列 15（`listCardPageSize`） |
 
 去掉 `scripts/` 前缀复制到业务仓，不必改 import。见 [bootstrap.md](bootstrap.md)。
 
@@ -55,19 +58,19 @@
 
 ## 共性规则
 
-以下对 §1–§5 都成立，各节不重复。§1–§4 的 Table 细则只约束表列表。
+以下对 §1–§6 都成立，各节不重复。§1–§4 的 Table 细则只约束表列表。
 
 - 根节点：`h-full min-h-0 flex flex-col`，占满导航壳内容区。
 - 结构线：页头 `Divider`、表头与表体分隔均为 **1px / `--yb-border-2`**（`page-layout.css` 覆盖）。
 - 标题：`Typography.Title` `heading={5}`，20 / 30 / 600，`var(--color-text-1)` 或 `var(--yb-text-1)`。
 - **无 Tab 页头**：四边 `padding: 24`，禁止 `'24px 24px 0'`（标题会贴 Divider）。**有 Tab 页头**：必须 `page-header-with-tabs`（`padding: 24px 24px 0`），禁止四边 24。两套勿混用。
-- 内容区（Divider 以下）：四边 24。§1–§4 不要对整块加 `overflow-auto`；§5 卡片网格更高，内容区允许 `overflow-auto`，分页仍 `shrink-0` 跟在网格后。
+- 内容区（Divider 以下）：四边 24。§1–§4 不要对整块加 `overflow-auto`；§5 / §6 卡片更高，内容区允许 `overflow-auto`，分页仍 `shrink-0` 跟在列表后。
 - Table（仅 §1–§4）：`border={false}`，**`pagination={false}`**。分页 `mt-4 shrink-0` 紧跟表格外层。表格外层 **禁止 `flex-1`**，否则分页被撑到视区底。
-- 名称列（仅 §1–§4）：`Link` + `LIST_TABLE_NAME_LINK_CLASSNAME`。操作列：`service-manage-actions` + **Arco `Link`**。两套 class **禁止混用**。§5 整卡进详情，标题不是表名称列，操作是 Card 内文字按钮。
+- 名称列（仅 §1–§4）：`Link` + `LIST_TABLE_NAME_LINK_CLASSNAME`。操作列：`service-manage-actions` + **Arco `Link`**。两套 class **禁止混用**。§5 / §6 整卡进详情，标题不是表名称列；§5 操作是 Card 内文字按钮。
 - 表头筛选 / 排序（仅 §1–§4）：`TableColumnFilterTitle` / `TableColumnSortTitle`，**禁止**与列 `sorter` 同时用。状态列默认走表头漏斗，不要在工具行再放一套状态 Radio。
 - **状态点**：表状态列、卡片标题行、详情标题旁一律 `ListTableStatusDot`（8px 圆点、间距 8px、文案 14/22/`--color-text-2`）。颜色用 `STATUS_DOT_COLOR`（运行中绿、已停用灰、失败红；同一表还有「成功」时运行中用 `processing`）。禁止纯文字、禁止 Arco `Badge`、禁止自绘圆点。表单页状态下拉没有点，不必套本组件。
-- 主按钮文案 **「创建 XX」**，放工具行右侧，不要放无 Tab 页头标题行。
-- 空态：表用 `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`；§5 用 `PageLevelEmpty layout="inline"`。禁止裸 Arco `Empty`。
+- 主按钮文案 **「创建 XX」**。§1–§5 放工具行右侧，不要放无 Tab 页头标题行。**§6** 放页头标题行右侧（标题操作区），工具行只放搜索 / 标签。
+- 空态：表用 `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`；§5 / §6 用 `PageLevelEmpty layout="inline"`。禁止裸 Arco `Empty`。
 - 删除等确认：`Modal.confirm`，不用 `Popconfirm`。**标题**默认「确定要操作XX吗？」（删除即「确定要删除「名称」吗？」）；**正文**只写该操作带来的影响，不要把问句再写一遍。消息：`globalMessage`。
 - 创建 / 编辑必须带 `state.from`，见 [form-page.md](form-page.md) §1.4。
 
@@ -129,7 +132,7 @@
 
 - `mt-4 shrink-0 flex items-center justify-between`。
 - 左：「共 N 条」，`text-[12px] leading-[18px] text-[color:var(--yb-text-2)]`，N 为过滤后总数。
-- 右：`Pagination`，`showTotal={false}`、`showJumper`、`sizeCanChange`、`pageSizeChangeResetCurrent`。默认 **`pageSize={20}`**（`LIST_DEFAULT_PAGE_SIZE`），`onChange` 同时更新页码与每页条数。不要写成 6 或 10。
+- 右：`Pagination`，`showTotal={false}`、`showJumper`、`sizeCanChange`、`pageSizeChangeResetCurrent`。表格默认 **`pageSize={10}`**（`LIST_DEFAULT_PAGE_SIZE`），`onChange` 同时更新页码与每页条数。卡片列表用 `listCardPageSize(列数)`：1/2 列 10，3 列 15。用户指定条数时只改常量，不要在各页写死。
 
 ### 1.7 数据过滤顺序
 
@@ -240,7 +243,7 @@ Modal.confirm({
 | 内容区 | `flex-1 min-h-0 flex flex-col gap-4 overflow-auto`，`padding: 24`（卡片比表高，允许这块滚动） |
 | 工具行 | 同 §1.2：`SearchWithRefresh` 宽 280；主按钮高 32，可带 `IconPlus` |
 | 网格 | `grid grid-cols-3 gap-4`（壳层最小宽 1280，固定一排 3 个，不要随宽度收成 1 / 2 列） |
-| 分页 | 网格下 `shrink-0 flex items-center justify-between`。左「共 N 条」。右 `Pagination`：默认 `pageSize={20}`（`LIST_DEFAULT_PAGE_SIZE`）、`showJumper`、`sizeCanChange`。不要写成 6 |
+| 分页 | 网格下 `shrink-0 flex items-center justify-between`。左「共 N 条」。右 `Pagination`：默认 `pageSize={15}`（`LIST_CARD_PAGE_SIZE_3COL` / `listCardPageSize(3)`）、`showJumper`、`sizeCanChange` |
 | 空态 | 无卡片时 `PageLevelEmpty layout="inline"`，不要表格 `noDataElement` |
 
 ### 5.2 卡片
@@ -265,7 +268,41 @@ Arco `Card`：`bordered={false}` + class **`yb-list-card`**（皮肤在 `page-la
 
 ---
 
-## 6. Checklist
+## 6. 单列横向卡片列表
+
+无 Tab 页头（**标题操作区**）+ 搜索 / 标签筛选 + **一排一条**左文右图内容卡 + 外置分页。对齐「资产中心 / 分页浏览」，不是 §5 三列应用卡，也不是看板 KPI 卡。
+
+复制 `scripts/list/06-HorizontalCardListPage.tsx`。**不要**先出 `grid-cols-3` 再改。
+
+### 6.1 页头与工具行
+
+| 约定 | 说明 |
+|------|------|
+| 页头 | 无 Tab，四边 padding 24 + `Divider`。标题行右侧放主按钮「创建 XX」（可带 `IconPlus`），**不要**再留 280 搜索占位 |
+| 内容区 | `flex-1 min-h-0 flex flex-col gap-4 overflow-auto`，`padding: 24` |
+| 工具行 | `SearchWithRefresh` 宽 280；标签用 `Radio.Group type="button"` + `yb-radio-button-group`；可选「高级筛选」展开更多 `Select`（宽 `FORM_CTRL_W_160`） |
+| 列表 | `flex flex-col gap-4`，**一列**。不要 `grid-cols-3` |
+| 分页 | 默认 `pageSize={10}`（`LIST_CARD_PAGE_SIZE_1COL` / `listCardPageSize(1)`）。2 列卡片同样 10；3 列才用 15 |
+| 空态 | `PageLevelEmpty layout="inline"` |
+
+### 6.2 内容卡
+
+Arco `Card`：`bordered={false}` + **`yb-list-card`**，`bodyStyle={{ padding: 24 }}`。整卡进详情。
+
+| 约定 | 说明 |
+|------|------|
+| 结构 | 左：标签 + 标题 + 摘要 + 发布信息 / 互动数据；右：配图 160×108，圆角 8 |
+| 标题 | 16 / 24 / 500，`var(--color-text-1)`，单行 truncate |
+| 摘要 | 14 / 22，`var(--color-text-3)`，最多两行 |
+| 标签 | Arco `Tag` `bordered={false}`；端类型可用 `arcoblue` |
+| 底栏 | 左「作者 · 时间」12 / `--color-text-3`；右阅读 / 点赞 / 评论，空值「—」 |
+| 配图 | 可换成业务图；没有实图时用模板内占位渐变，不要留空框 |
+
+创建 / 编辑带 `state.from`，同 §1。
+
+---
+
+## 7. Checklist
 
 ### 无树（§1）
 
@@ -275,7 +312,7 @@ Arco `Card`：`bordered={false}` + class **`yb-list-card`**（皮肤在 `page-la
 4. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME`；省略用 `TableEllipsisCell`；排序/筛选勿混列 `sorter`。
 5. 操作列 `service-manage-actions` + Arco `Link`；删除 `Modal.confirm`。
 6. `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`。
-7. 分页「共 N 条」+ `Pagination` 同 §1.6；默认每页 20。
+7. 分页「共 N 条」+ `Pagination` 同 §1.6；默认每页 10。
 
 ### 带 Tab + 双行表（§2）
 
@@ -301,5 +338,13 @@ Arco `Card`：`bordered={false}` + class **`yb-list-card`**（皮肤在 `page-la
 2. `SearchWithRefresh` 宽 280；主按钮「创建 XX」在工具行右。
 3. 网格固定 `grid-cols-3`、`gap-4`；卡挂 `yb-list-card`，圆角 12，不要 `yb-content-card`。
 4. 整卡进详情；标题 16/24/500；状态 `ListTableStatusDot`；操作是文字按钮，`stopPropagation`。
-5. 空态 `PageLevelEmpty layout="inline"`；分页「共 N 条」、默认每页 20、`sizeCanChange`。
+5. 空态 `PageLevelEmpty layout="inline"`；分页「共 N 条」、默认每页 15、`sizeCanChange`。
 6. 删除 `Modal.confirm`；创建 / 编辑带 `state.from`。
+
+### 单列横向卡片（§6）
+
+1. 无 Tab 页头四边 24 + Divider；主按钮在**标题行右侧**。
+2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选；内容区 `flex flex-col gap-4`。
+3. 卡挂 `yb-list-card`；左文右图（160×108）；整卡进详情。
+4. 空态 `PageLevelEmpty layout="inline"`；分页默认每页 10、`sizeCanChange`。
+5. 不要做成 §5 三列资源卡。

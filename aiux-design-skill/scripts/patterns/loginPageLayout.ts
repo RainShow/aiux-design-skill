@@ -2,6 +2,7 @@
  * 登录页布局常量（对齐 Figma 755:5716 / 背景 576:16786）。
  * 说明见同 Skill `login-page.md`。
  */
+import { NAV_LAYOUT_MIN_W_PX } from './navShellLayout'
 
 /** 路由 path */
 export const LOGIN_ROUTE_PATH = '/login' as const
@@ -20,8 +21,17 @@ export const LOGIN_BG_FALLBACK = '#dceaff' as const
 export const LOGIN_BG_MAIN_WIDTH_CLASS =
   'w-[max(100%,min(2048px,170%),calc(100dvh*4096/2276))]' as const
 
-/** 桌面断点：与 Tailwind `lg` 一致（≥1024px 用三栏布局） */
-export const LOGIN_DESKTOP_MIN_PX = 1024 as const
+/**
+ * 登录页最小宽：与产品壳 `--yb-layout-min-w` 一致。
+ * 视口更窄时由 html 横向滚动，不按 1024px 切到仅卡片的移动布局。
+ */
+export const LOGIN_LAYOUT_MIN_W_PX = NAV_LAYOUT_MIN_W_PX
+export const LOGIN_DESKTOP_MIN_PX = LOGIN_LAYOUT_MIN_W_PX
+export const LOGIN_ROOT_MIN_W_CLASS = 'min-w-[var(--yb-layout-min-w)]' as const
+
+/** 桌面主区：三栏从最小宽起始终展示 */
+export const LOGIN_DESKTOP_MAIN_CLASS =
+  'grid min-h-0 w-full min-w-0 flex-1 grid-cols-[29.22fr_8.28fr_37.5fr] items-start px-[12.5%] pt-[22.625vh]' as const
 
 /**
  * 桌面主区栅格：左右边距各 12.5%，中间三列比例 29.22 : 8.28 : 37.5

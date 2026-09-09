@@ -25,6 +25,7 @@
 | 详情主 Tab「暂未接入」、详情「未找到」整页 | §1，`layout="page"`（默认） |
 | 列表 / 区块 / 抽屉内无业务数据 | §2，`layout="inline"` |
 | 卡片列表网格无数据 | §2，`layout="inline"`（见 [list-page.md](list-page.md) §5） |
+| 单列横向内容卡无数据 | §2，`layout="inline"`（见 [list-page.md](list-page.md) §6） |
 | Arco `Table` 无行 | `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`（已是 `inline`） |
 | 挂了 `service-manage-table` / `service-detail-table` 仍用默认 `Empty` | CSS 会换图标；**仍推荐**显式传 `PageLevelEmpty` |
 

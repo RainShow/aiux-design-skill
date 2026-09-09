@@ -9,8 +9,8 @@
 | [共性规则](#共性规则) | 全屏壳、禁止业务主区滚动 |
 | [1. 壳层与路由](#1-壳层与路由) | `/login`、鉴权跳转、`MinimalAppShell fullscreen` |
 | [2. 页面结构](#2-页面结构三层) | 背景 / 品牌 / 主区 / 页脚 |
-| [3. 桌面布局](#3-桌面布局--lg--1024px) | 三栏 + 左文案 + 右卡片 |
-| [4. 移动布局](#4-移动布局--lg) | 仅居中卡片 |
+| [3. 桌面布局](#3-桌面布局最小宽-1280) | 三栏 + 左文案 + 右卡片；与壳层同最小宽 |
+| [4. 窄于 1280](#4-窄于-1280) | html 横滚，不切移动布局 |
 | [5. 登录卡片](#5-登录卡片表单) | vertical Form、large 控件 |
 | [6. 背景层](#6-背景层loginpagebackground) | 多层位图，禁止纯色替代 |
 
@@ -37,8 +37,8 @@
 |------|------|
 | 整页 | `scripts/auth/LoginPage.tsx` |
 | 背景层 | `scripts/auth/LoginPageBackground.tsx` |
-| 布局常量 | `scripts/patterns/loginPageLayout.ts` |
-| 鉴权 demo key | `scripts/patterns/authDemo.ts`（`AUTH_DEMO_SESSION_KEY`） |
+| 布局常量 | `scripts/patterns/loginPageLayout.ts`（最小宽对齐 `NAV_LAYOUT_MIN_W_PX`） |
+| 鉴权 demo | `scripts/patterns/authDemo.ts`（`writeDemoAuthed` / `subscribeDemoAuth`）+ `scripts/auth/useDemoAuth.ts` |
 | 背景图 | `assets/login/`（主图 `bg-2160-1.png` + 多层装饰） |
 | 左上品牌 | `scripts/components/TopNavBrandLogo.tsx` + `assets/brand/topnav-logo.svg` |
 | 全屏壳 | `scripts/components/MinimalAppShell.tsx`（`fullscreen`）或 `ProductAppShell` 对登录路由自动去顶侧栏 |
@@ -50,10 +50,12 @@
 ## 共性规则
 
 - 无 TopNav / SideNav。根容器 `h-[100dvh]` + `overflow-hidden`；底色 `LOGIN_SHELL_BG`（`#dceaff`）。
+- 登录根与全屏壳加 `min-w-[var(--yb-layout-min-w)]`（**1280**），与产品壳同一最小宽。
 - **禁止**走业务主区的 `yb-layout-main-scroll`：纵向滚动会破坏背景 `absolute inset-0` 参照系。
 - Message 仍挂 `#yb-message-root` + `globalMessage`。
 - 常量从 `loginPageLayout.ts` 导入，不要在业务页手写 12.5% / 480 / `#dceaff`。
 - 登录卡片是 Arco `Form` `layout="vertical"`，与业务水平表单 `.app-form-page` **不是同一套**。
+- Demo 鉴权用 `writeDemoAuthed(true)`，不要只 `sessionStorage.setItem`；壳层用 `useDemoAuth()` 才能听到登录/退出。
 
 ---
 
@@ -62,8 +64,8 @@
 | 项 | 约定 |
 |----|------|
 | 路由 | `LOGIN_ROUTE_PATH`（`/login`） |
-| 鉴权 demo | `authDemo.ts` 的 `AUTH_DEMO_SESSION_KEY`；未登录进业务路由 → 重定向登录；已登录访问登录 → 回首页 |
-| 壳层表现 | 无顶栏侧栏；`h-[100dvh]` + `overflow-hidden`；底色 `LOGIN_SHELL_BG` |
+| 鉴权 demo | `writeDemoAuthed` / `useDemoAuth`；未登录进业务路由 → 重定向登录；已登录访问登录 → 回首页 |
+| 壳层表现 | 无顶栏侧栏；`h-[100dvh]` + `overflow-hidden` + `min-w-[var(--yb-layout-min-w)]`；底色 `LOGIN_SHELL_BG` |
 
 ```tsx
 <MinimalAppShell fullscreen style={{ backgroundColor: LOGIN_SHELL_BG }}>
@@ -78,20 +80,21 @@
 ## 2. 页面结构（三层）
 
 ```
-根（relative, h-full, flex-col, overflow-x-hidden）
+根（relative, h-full, flex-col, overflow-x-hidden, min-w 1280）
 ├─ LoginPageBackground（absolute inset-0, pointer-events-none）
 ├─ header：左上品牌 TopNavBrandLogo（absolute left-6 top-6 z-10）
-├─ main（relative z-10 flex-1）
-│   ├─ 桌面 lg+：三栏 grid + 左右 12.5% padding
-│   └─ 移动 <lg：居中登录卡片
+├─ main（relative z-10 flex-1，min-w 1280）
+│   └─ 三栏 grid + 左右 12.5% padding（始终，不要 lg:hidden）
 └─ footer：合规/链接文案（shrink-0）
 ```
 
 ---
 
-## 3. 桌面布局（≥ `lg` / 1024px）
+## 3. 桌面布局（最小宽 1280）
 
-- 主区：`grid` + `grid-cols-[29.22fr_8.28fr_37.5fr]` + `px-[12.5%]` + `pt-[22.625vh]` + `items-start`
+从壳层最小宽起**始终**走三栏，不要用 Tailwind `lg`（1024）切移动布局。
+
+- 主区 class：`LOGIN_DESKTOP_MAIN_CLASS`
 - **左栏**：品牌渐变字「中国电子云」→ 平台名 `h1` → 功能说明；额外 `pt-[2.99vh]`
 - **中栏**：占位（`aria-hidden`），拉开左右
 - **右栏**：登录卡片，`max-w-[480px]`、`min-h-[54.75vh]`、`rounded-xl`、`px-10 pb-10 pt-16`、`background: var(--color-bg-2)`
@@ -106,11 +109,11 @@
 
 ---
 
-## 4. 移动布局（`< lg`）
+## 4. 窄于 1280
 
-- `flex flex-1 flex-col items-center justify-center px-6 py-20`
-- 仅展示登录卡片（`max-w-[480px]`），规格与桌面右栏一致
-- 左栏营销文案隐藏
+- 视口窄于 `--yb-layout-min-w` 时由 **html 横向滚动**，与产品壳一致
+- **禁止** `lg:hidden` 再做一套居中卡片；不要两套表单
+- 全屏壳（`ProductAppShell` 登录分支 / `MinimalAppShell fullscreen`）同样加 `min-w-[var(--yb-layout-min-w)]`
 
 ---
 
@@ -159,8 +162,9 @@ h-auto min-h-full min-w-full max-w-none
 
 - [ ] `/login` 无顶栏/侧栏；使用 `MinimalAppShell fullscreen`（或等价全屏壳）；壳底色 `#dceaff`
 - [ ] 登录壳**无**业务主区纵向滚动（非 `yb-layout-main-scroll`）
+- [ ] 根与全屏壳 `min-w-[var(--yb-layout-min-w)]`；始终三栏，没有 `lg:hidden` 移动卡
 - [ ] 桌面：左右 12.5% 边距，三栏比例与卡片 `max-w 480`、顶距约 `22.625vh`
-- [ ] 移动：仅居中卡片，无左侧营销文案
+- [ ] 视口 < 1280 时 html 横滚，不降级成仅卡片
 - [ ] 背景多层图可见，非纯色占位；主底图盖满视口（高屏顶部无 `#dceaff` 缝），构图接近稿面（勿被 `h-full` 压扁）
-- [ ] 表单 vertical + large 控件；登录走 `globalMessage`；demo 鉴权写入 `AUTH_DEMO_SESSION_KEY`
-- [ ] 左上品牌与顶栏 `TopNavBrandLogo` 视觉一致
+- [ ] 表单 vertical + large 控件；登录走 `globalMessage`；demo 鉴权走 `writeDemoAuthed`
+- [ ] 左上品牌与顶栏 `TopNavBrandLogo` 视觉一致；页签 title 与产品名一致；`public/favicon.ico` 已挂

@@ -10,6 +10,16 @@
 
 ## 1. 依赖安装
 
+工作区已有 `.cursor/skills/` 时，**不要** `npm create vite@latest .`（非空目录会失败）。先建到临时目录再搬到根：
+
+```bash
+npm create vite@latest _vite_tmp -- --template react-ts
+rsync -a _vite_tmp/ ./ --exclude node_modules
+rm -rf _vite_tmp
+```
+
+然后钉依赖：
+
 ```bash
 npm install react@18 react-dom@18 @arco-design/web-react react-router-dom
 npm install -D tailwindcss@3 postcss autoprefixer
@@ -19,6 +29,17 @@ npm install -D tailwindcss@3 postcss autoprefixer
 
 配置 Tailwind（`content` 覆盖 `./src/**/*.{ts,tsx}`）。图表按需：`npm install echarts`（仅落地看板页时）。
 
+`vite.config.ts` 加上 `optimizeDeps.include`，避免 HMR 把 `react-router-dom` 打成两份：
+
+```ts
+export default defineConfig({
+  plugins: [react()],
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', '@arco-design/web-react'],
+  },
+})
+```
+
 本 Skill 默认按 Tailwind **开启** preflight（含全局 `box-sizing: border-box`）来验收。若为避免覆盖 Arco reset 而设置 `preflight: false`，**必须**使用本 Skill 的 `shell-baseline.css`（已补 `*, *::before, *::after { box-sizing: border-box }`）。缺少此项时，顶栏 `w-full + px-16` 会在 content-box 下比视口更宽，`overflow-clip` 裁掉头像，图标也会被压扁。
 
 ## 2. 从 Skills 复制资产
@@ -27,7 +48,7 @@ npm install -D tailwindcss@3 postcss autoprefixer
 |------|------|
 | 代码模板 | `scripts/{components,patterns,nav,providers}/` → 项目 `src/{components,patterns,nav,providers}/`（去掉 `scripts/` 前缀，**不必改 import**） |
 | 样式 | `styles/` → 项目 `src/styles/` |
-| 静态资源 | 根目录 `assets/` → 项目 `src/assets/` |
+| 静态资源 | 根目录 `assets/` → 项目 `src/assets/`（`assets/brand/favicon.ico` 例外，拷到项目 `public/favicon.ico`，见 §2.7.1） |
 
 **不要**把 `scripts/tsconfig.json`、`scripts/env.d.ts` 拷进业务仓库。那只给在 Skill 里打开模板时消红线；落地后以宿主 tsconfig 与真实依赖为准。
 
@@ -132,6 +153,7 @@ export default function App() {
 | `scripts/auth/LoginPageBackground.tsx` | `src/auth/LoginPageBackground.tsx` |
 | `assets/login/*` | `src/assets/login/` |
 | `assets/brand/topnav-logo.svg` | `src/assets/brand/topnav-logo.svg` |
+| `scripts/auth/useDemoAuth.ts` | `src/auth/useDemoAuth.ts` |
 | `scripts/components/TopNavBrandLogo.tsx` | `src/components/TopNavBrandLogo.tsx`（只做登录、未拷整份导航壳时单独拷；已拷 §2.8 则不必再拷） |
 
 路由注册 `/login`；登录路由下：
@@ -142,11 +164,27 @@ export default function App() {
 </MinimalAppShell>
 ```
 
-主底图宽度公式与验收项见 [login-page.md](login-page.md)。
+主底图宽度公式与验收项见 [login-page.md](login-page.md)。登录最小宽与产品壳同为 1280，不要用 `lg`（1024）切移动布局。Demo 登录用 `writeDemoAuthed(true)`，`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给壳。
+
+### 2.7.1 页签名称与 favicon
+
+| Skill 源 | 目标 |
+|----------|------|
+| `assets/brand/favicon.ico` | 项目 `public/favicon.ico` |
+| `assets/brand/favicon.png` | 仅作源图；用户另给图标时转成 `public/favicon.ico` 覆盖 |
+
+`index.html`：
+
+```html
+<title>新星数智化平台</title>
+<link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="any" />
+```
+
+`<title>` 必须与 `PLATFORM_PRODUCT_NAME` / `navConfig.platformName` 一致，不要写成 `AIUX Demo` 或 Vite 默认名。`ProductAppShell` 会把 `document.title` 同步成 `config.platformName`。用户提供了 favicon 图则替换 `public/favicon.ico`，不要留 Vite 默认图标。
 
 ### 2.8 产品导航壳（顶栏 + 按产品线默认的双列/单列侧导）
 
-落地前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列：全模态默认双列，应用开发 / 基础管控等默认单列；只有用户强烈明确要求时才把非全模态改成双列。
+落地前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列：全模态默认双列，模型开发 / 应用开发 / 基础管控等默认单列；只有用户强烈明确要求时才把非全模态改成双列。
 
 复制：
 
@@ -160,17 +198,26 @@ export default function App() {
 业务侧新建 `src/nav/navConfig.ts`（参考 `scripts/nav/exampleNavConfig.ts` 的字段结构：全模态 dual，其他顶导 singles，入口名换成用户确认过的）。菜单图标用 `NAV_PRESET_ICONS` / `resolveNavIcon`（[nav-icons.md](nav-icons.md)），不要手绘或改用 Arco Icon。尚未落地的菜单路由挂 `PlaceholderPage`（[layout.md](layout.md) §5.1），不要做成带「创建」按钮的假列表。`App.tsx`：
 
 ```tsx
-<ProductAppShell
-  config={navConfig}
-  logoSrc={logo}
-  foldIconSrc={fold}
-  unfoldIconSrc={unfold}
-  putawayIconSrc={putaway}
-  isAuthed={…}
-  onLogout={…}
->
-  <AppRoutes />
-</ProductAppShell>
+import { useDemoAuth } from './auth/useDemoAuth'
+
+export default function App() {
+  const { isAuthed, onLogout } = useDemoAuth()
+  return (
+    <ArcoTheme19155Provider>
+      <ProductAppShell
+        config={navConfig}
+        logoSrc={logo}
+        foldIconSrc={fold}
+        unfoldIconSrc={unfold}
+        putawayIconSrc={putaway}
+        isAuthed={isAuthed}
+        onLogout={onLogout}
+      >
+        <AppRoutes />
+      </ProductAppShell>
+    </ArcoTheme19155Provider>
+  )
+}
 ```
 
 `putawayIconSrc` 传入后轨顶出现**汉堡图标**（无文字），壳层打开 `DualColumnOverviewModal`。在 `navConfig.dual.overview` 写入标题、分区简介与两列 links（见 `exampleNavConfig.ts`）。**不必**再传 `onOverviewClick`，除非要完全自绘。单列形态不需要 dual overview。
@@ -200,7 +247,8 @@ export default function App() {
 | `scripts/list/02-TabDoubleRowListPage.tsx` | 同目录，页头 Tabs + 64px 双行表 |
 | `scripts/list/03-TabRow48ListPage.tsx` | 同目录，页头 Tabs + 48px 表 |
 | `scripts/list/04-TreeListPage.tsx` | 同目录，仅稿面明确要左树时 |
-| `scripts/list/05-CardListPage.tsx` | 同目录，卡片列表 / 广场 / 资源卡网格 |
+| `scripts/list/05-CardListPage.tsx` | 同目录，三列资源卡 / 广场（每页 15） |
+| `scripts/list/06-HorizontalCardListPage.tsx` | 同目录，单列横向内容卡 / 分页浏览（每页 10） |
 | `scripts/form/01-BasicFormPage.tsx` | `src/{feature}/CreateXxxPage.tsx`（编辑复用同一文件，靠 `useParams`） |
 | `scripts/form/02-DrawerForm.tsx` | `src/{feature}/AddXxxDrawer.tsx` |
 | `scripts/detail/01-BasicDetailPage.tsx` | `src/{feature}/XxxDetailPage.tsx`（有主 Tab） |
@@ -234,7 +282,9 @@ src/
 ├── providers/
 │   └── ArcoTheme19155Provider.tsx
 ├── auth/
-│   └── LoginPage.tsx
+│   ├── LoginPage.tsx
+│   ├── LoginPageBackground.tsx
+│   └── useDemoAuth.ts
 ├── {feature}/               # 一层业务功能，如 service/
 │   └── XxxPage.tsx
 ├── components/              # ProductAppShell / 原子；SearchBox、DetailFieldValue 为多文件组件
@@ -244,6 +294,13 @@ src/
 │   ├── empty/
 │   └── nav/
 └── patterns/
+```
+
+项目根另需：
+
+```
+public/favicon.ico           # 从 assets/brand/favicon.ico 拷；不要留 Vite 默认图标
+index.html                   # <title> = PLATFORM_PRODUCT_NAME
 ```
 
 入口：`main.tsx`（`BrowserRouter` + `arco.css` + `index.css` + 主题 CSS）→ `App.tsx`（`ArcoTheme19155Provider` → `ProductAppShell` → `AppRoutes`）→ `routes.tsx`。
@@ -274,6 +331,8 @@ src/
 - [ ] 表单校验：红框 + 白底无粉底；底栏默认「确定 / 取消」
 - [ ] 页面级空态距内容区顶约 1/4，不是垂直居中；表格空态 `LIST_TABLE_NO_DATA_ELEMENT`
 - [ ] Arco 主色/字号与主题 19155 一致（非默认蓝）
+- [ ] `index.html` `<title>` = `PLATFORM_PRODUCT_NAME`；`public/favicon.ico` 已挂，不是 Vite 默认图
+- [ ] 登录与产品壳最小宽同为 1280，始终三栏；`App.tsx` 用 `useDemoAuth()` 传 `isAuthed` / `onLogout`
 
 ## 5. 范围边界
 

@@ -12,6 +12,7 @@ import {
   DEV_TASK_IDE_ROOT_CLASS,
   DEV_TASK_VERSION_TABLE_MIN_WIDTH_PX,
 } from '../patterns/devTaskIdePage'
+import { LIST_DEFAULT_PAGE_SIZE } from '../patterns/listPageLayout'
 import { LIST_TABLE_NO_DATA_ELEMENT } from '../patterns/listTableNoDataElement'
 
 /**
@@ -42,6 +43,7 @@ export function BasicIdePage() {
   const [rightCollapsed, setRightCollapsed] = useState(false)
   const [sideTab, setSideTab] = useState('config' as SideTab)
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(LIST_DEFAULT_PAGE_SIZE)
 
   const openRight = (tab: SideTab) => {
     setSideTab(tab)
@@ -165,13 +167,16 @@ export function BasicIdePage() {
                         </span>
                         <Pagination
                           current={page}
-                          pageSize={10}
+                          pageSize={pageSize}
                           total={VERSION_ROWS.length}
                           showTotal={false}
                           showJumper
                           sizeCanChange
                           pageSizeChangeResetCurrent
-                          onChange={(next: number) => setPage(next)}
+                          onChange={(next: number, size: number) => {
+                            setPage(next)
+                            setPageSize(size)
+                          }}
                         />
                       </div>
                     </div>

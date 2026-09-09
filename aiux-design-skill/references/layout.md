@@ -25,12 +25,12 @@
 
 **何时用**
 
-写代码前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 应用开发 / 基础管控）。**不要问**侧导用双列还是单列。
+写代码前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导用双列还是单列。
 
 | 判断 | 用 |
 |------|----|
 | 顶导是「全模态数据智能」 | `ProductAppShell` **双列**（轨 60 + 二级 180） |
-| 应用开发 / 基础管控 / 其他产品线（默认） | `ProductAppShell` **单列**（200 / 60） |
+| 应用开发 / 模型开发 / 基础管控 / 其他产品线（默认） | `ProductAppShell` **单列**（200 / 60） |
 | 用户**强烈明确**要求某条非全模态产品线也用双列 | 才把该顶导改为 dual |
 | 只要 Message + 插槽、自己写导航 | `MinimalAppShell` |
 | 登录 / 全屏编辑器 | `ProductAppShell` 自动去顶侧栏，或 `MinimalAppShell fullscreen` |
@@ -58,7 +58,7 @@
 ## 共性规则
 
 - 侧导高度一律：`h-[calc(100dvh-var(--yb-topnav-h))]`。
-- 壳与顶栏 `min-width: var(--yb-layout-min-w)`（**1280**）。视口更窄时 **html 横向滚动**，勿裁切顶栏右侧。
+- 壳与顶栏、**登录全屏壳** `min-width: var(--yb-layout-min-w)`（**1280**）。视口更窄时 **html 横向滚动**，勿裁切顶栏右侧，登录页也不要降级成移动卡片。
 - `shell-baseline.css`：全局 `box-sizing: border-box`；`html { overflow-x: auto }`，`body` / `#root` 设 `min-width`。禁止 html/body/#root 全部 `overflow: hidden`，否则小于 1280 时顶栏头像会被裁一半。关掉 Tailwind preflight 时尤其依赖这份 baseline，否则 `w-full + px-16` 会把头像裁出视口。
 - 菜单文案、路由、产品线顺序全部 **config 注入**。禁止在组件内写死「全模态 / 应用开发」等产品名。
 - 菜单 `iconSrc` 来自 `NAV_PRESET_ICONS` / `resolveNavIcon`，未另起一套图标。
@@ -220,7 +220,7 @@ header h-56 | min-width 1280 | bg --yb-bg-2 | border-b 1px --yb-border-2 | shado
 3. dual / single 用对应 resolve* 算激活项
 4. `isFullscreenPath` / `loginPath` → 无顶侧栏全屏
 
-鉴权：传 `isAuthed` 时壳内做登录跳转；也可在外层自行 `Navigate`。
+鉴权：`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给壳；登录页用 `writeDemoAuthed(true)`。只写 `sessionStorage` 壳听不到变化。也可在外层自行 `Navigate`。
 
 ### 5.1 未搭建菜单页
 
@@ -253,6 +253,7 @@ header h-56 | min-width 1280 | bg --yb-bg-2 | border-b 1px --yb-border-2 | shado
 ## 7. Checklist
 
 - [ ] 顶栏高 56；`min-width` 1280 且与壳同宽；视口 < 1280 时页面横滚、头像完整不被裁
+- [ ] 浏览器页签 title = `navConfig.platformName`；`public/favicon.ico` 已挂，不是 Vite 默认图
 - [ ] 右侧文档/铃铛用 `TopNavGlyphIcon` + 光学 inset，不拉伸；头像 32×32 正圆
 - [ ] 产品线来自 config，激活字重正确
 - [ ] 双列：轨 60 + 二级 180；主页仅 60；折叠藏二级；home 不可 fold；**一级轨拉满视口高度，fold 在底部**

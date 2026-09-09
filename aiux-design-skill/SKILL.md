@@ -2,7 +2,7 @@
 name: aiux-design-skill
 description: >-
   基于 AIUX / Arco Design 主题 19155 生成企业级中后台界面：导航壳、列表/卡片列表/表单/详情/IDE/登录/空态/看板、Design Token、ConfigProvider 与原子组件。
-  用于新建或改造 React+TypeScript 业务页（产品列表/表单/详情 Figma 稿用 Arco 落地，不要自绘 Tailwind 组件），或用户提及 AIUX、aiux-design-skill、Arco、主题 19155、page-layout、列表页、卡片列表、应用广场、应用管理、表单页、详情页、登录页、导航壳、双列侧导、单列侧导、空态、PageLevelEmpty、NAV_PRESET_ICONS、看板、指标磁贴、监控概览、yb-content-card、yb-list-card、ECharts tooltip、Design Token、ConfigProvider、
+  用于新建或改造 React+TypeScript 业务页（产品列表/表单/详情 Figma 稿用 Arco 落地，不要自绘 Tailwind 组件），或用户提及 AIUX、aiux-design-skill、Arco、主题 19155、page-layout、列表页、卡片列表、单列横向卡片、资产中心、分页浏览、应用广场、应用管理、表单页、详情页、登录页、导航壳、双列侧导、单列侧导、空态、PageLevelEmpty、NAV_PRESET_ICONS、看板、指标磁贴、监控概览、yb-content-card、yb-list-card、favicon、ECharts tooltip、Design Token、ConfigProvider、
   /aiux、/page-layout、/list-page、/form-page、/detail-page、/login-page 时。
 ---
 
@@ -17,7 +17,7 @@ description: >-
 ## 优先级
 
 1. 命中本 Skill 页面类型 → 用本 Skill 选型 / class / Token，Arco 官方文档只补 API，不覆盖结构。
-2. `scripts/` 有模板（导航壳、登录、列表五套、全页/抽屉表单、详情两套、看板两套、IDE、原子、常量、Provider）→ **复制起步**，只换业务字段、数据、文案与提交逻辑。
+2. `scripts/` 有模板（导航壳、登录、列表六套、全页/抽屉表单、详情两套、看板两套、IDE、原子、常量、Provider）→ **复制起步**，只换业务字段、数据、文案与提交逻辑。
 3. 有 reference、无整页模板 → 按 `references/*-page.md` 生成，复用 `scripts/components/` 与 `scripts/patterns/`，禁止自写 Table / Form 皮肤。
 4. 未覆盖能力 → Arco 原生 API，视觉仍继承本 Skill 的 token、密度、圆角与分割线。
 5. 产品 Figma 稿 → 结构 / 文案跟 Figma，组件用 Arco；映射见 [theme-mapping.md](references/theme-mapping.md)。
@@ -34,7 +34,7 @@ description: >-
 | 表单 | [form-page.md](references/form-page.md) | `scripts/form/` 中 **1 个** | `.app-form-page`；校验见 `arco-theme-19155.css` |
 | 详情 | [detail-page.md](references/detail-page.md) | `scripts/detail/` 中 **1 个** | 详情 / Tab |
 | IDE | [ide-page.md](references/ide-page.md) | `scripts/ide/` 中 **1 个** | IDE 中缝 |
-| 登录 | [login-page.md](references/login-page.md) | `scripts/auth/`（品牌用 `TopNavBrandLogo`） | `figma-tokens.css` |
+| 登录 | [login-page.md](references/login-page.md) | `scripts/auth/`（品牌用 `TopNavBrandLogo`；整拷含 `useDemoAuth.ts`） | `figma-tokens.css` |
 | 空态 | [empty-state.md](references/empty-state.md) | `PageLevelEmpty.tsx` | 空态插画路径 |
 | 看板 | [dashboard-page.md](references/dashboard-page.md) 对应 § | `scripts/dashboard/` 中 **1 个** | 卡片 |
 | Figma→Arco | [theme-mapping.md](references/theme-mapping.md) | — | `arco-theme-19155.css` |
@@ -79,14 +79,14 @@ description: >-
 
 写代码前必须先问用户并等答复：
 
-顶导有几个入口、各叫什么？未指定时给出 2～3 个建议名让用户选（全模态数据智能 / 应用开发 / 基础管控）,侧导按默认提供，比如全模态数据智能默认配置双列侧导，其他默认配置单列侧导。
+顶导有几个入口、各叫什么？未指定时给出建议名让用户选（全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。侧导按默认提供：全模态数据智能默认双列，其他产品线默认单列。
 
 同一壳内可以混用：
 
 | 条件 | 用 |
 |------|----|
 | 顶导是「全模态数据智能」（或用户明确只要该产品线的轨+二级） | `ProductAppShell` **双列**（轨 60 + 二级 180） |
-| 应用开发 / 基础管控 / 其他产品线（默认） | `ProductAppShell` **单列**（200 / 60） |
+| 应用开发 / 模型开发 / 基础管控 / 其他产品线（默认） | `ProductAppShell` **单列**（200 / 60） |
 | 用户**强烈明确**要求某条非全模态产品线也用双列 | 才把该顶导改为 dual |
 | 只要插槽 | `MinimalAppShell` |
 | 登录 / 全屏 | `fullscreen` |
@@ -107,8 +107,9 @@ description: >-
 | 页头 Tabs + 48px 单行 | §3（复制 `03-TabRow48ListPage.tsx`） |
 | 稿面**明确**要左树 | §4（复制 `04-TreeListPage.tsx`） |
 | 卡片列表 / 卡片墙 / 页名含「广场」且没说要表 / 稿面是资源卡网格 | §5（复制 `05-CardListPage.tsx`） |
+| 单列横向内容卡 / 分页浏览 / 资产中心（左文右图、一排一条） | §6（复制 `06-HorizontalCardListPage.tsx`） |
 
-页面名叫「服务管理」不是加树的信号。名字含「管理」也不是走表的信号。不确定表还是卡时先问一句。不要把看板做成整页列表，也不要把卡片列表做成看板。
+页面名叫「服务管理」不是加树的信号。名字含「管理」也不是走表或走卡的信号：搜索表 + CRUD 走 §1，广场 / 卡片墙才走 §5。不确定表还是卡、三列资源卡还是横向内容卡时先问一句。不要把看板做成整页列表，也不要把卡片列表做成看板。不要把 §6 做成 §5 三列网格。
 
 ### 表单
 
@@ -141,31 +142,49 @@ description: >-
 
 ### 生成导航
 
-1. **先问**顶导入口名称（未指定时给 2～3 个建议：全模态数据智能 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列。得到顶导答复后：全模态用双列，应用开发 / 基础管控等用单列；仅当用户强烈要求时才把非全模态改成双列。
+1. **先问**顶导入口名称（未指定时给：全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列。得到顶导答复后：全模态用双列，模型开发 / 应用开发 / 基础管控等用单列；仅当用户强烈要求时才把非全模态改成双列。
 2. 读 `layout.md`、`nav-icons.md`。
 3. 复制 `scripts/components/` 产品壳，或只要 `MinimalAppShell`。相对导入已对齐，不必改。
 4. 从 `scripts/nav/exampleNavConfig.ts` 复制结构到 `src/nav/navConfig.ts`：按产品线默认形态保留 dual / singles，换成用户确认的入口名 / path / 图标。
 5. 保留顶栏 56、双列 60+180 / 单列 200、位置选择器 280×400、默认 `NavWorkspaceSelect`。
 6. 侧导顶部不要改成普通 `Select` 列表。
 7. 菜单已挂、业务页还没做的路由复制 `scripts/pages/PlaceholderPage.tsx`：页头标题 + 侧导路径 +「该页面还未搭建」。不要加搜索，不要加「创建 XX」。
+8. `index.html` 的 `<title>`、运行时 `document.title` 用 `navConfig.platformName`（壳层已同步）。`public/favicon.ico` 从 `assets/brand/favicon.ico` 拷贝；用户另给图则替换，不要留 Vite 默认图标。
+
+### 生成登录页面
+
+1. 读 `login-page.md`。整拷 `scripts/auth/`（含 `useDemoAuth.ts`）与 `assets/login/`、`assets/brand/topnav-logo.svg`。
+2. 全屏壳 `fullscreen` + `LOGIN_SHELL_BG`；根与壳 `min-w-[var(--yb-layout-min-w)]`（1280）。始终三栏，不要 `lg` 切移动卡。
+3. 登录成功 `writeDemoAuthed(true)`。`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给 `ProductAppShell`。
+4. 页签 title 与 `PLATFORM_PRODUCT_NAME` 一致；拷 favicon 到 `public/favicon.ico`。
 
 ### 生成列表页面
 
-1. 按选型复制 `scripts/list/01`–`05` 之一到 `src/{feature}/`。表模板只换列、数据、path、文案；§5 只换字段、数据、path。细节读 `list-page.md` 对应节。
-2. 复用 `SearchWithRefresh`、`ListTableStatusDot`。主按钮 **「创建 XX」** 放工具行右侧。创建 / 编辑带 `state.from`。
-3. **§5**：到此为止，见下面「生成卡片列表」。**§1–§4** 继续 4–7。
-4. 再加 `TableColumnFilterTitle`、`LIST_TABLE_NO_DATA_ELEMENT`。Table：`border={false}`、`pagination={false}`；分页 `mt-4 shrink-0` 紧跟表外层，表外层禁止 `flex-1`。默认每页 20（`LIST_DEFAULT_PAGE_SIZE`），不要写成 10。
+1. 按选型复制 `scripts/list/01`–`06` 之一到 `src/{feature}/`。表模板只换列、数据、path、文案；§5 / §6 只换字段、数据、path。细节读 `list-page.md` 对应节。
+2. 复用 `SearchWithRefresh`、`ListTableStatusDot`。§1–§5 主按钮 **「创建 XX」** 放工具行右侧。§6 放页头标题行右侧。创建 / 编辑带 `state.from`。
+3. **§5 / §6**：到此为止，见下面「生成卡片列表」。**§1–§4** 继续 4–7。
+4. 再加 `TableColumnFilterTitle`、`LIST_TABLE_NO_DATA_ELEMENT`。Table：`border={false}`、`pagination={false}`；分页 `mt-4 shrink-0` 紧跟表外层，表外层禁止 `flex-1`。默认每页 10（`LIST_DEFAULT_PAGE_SIZE`）。用户改条数只动该常量。
 5. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME` + `Link`；操作列 `service-manage-actions` + Arco `Link`，class **禁止混用**。
 6. 有状态列时单元格用 `ListTableStatusDot`（`STATUS_DOT_COLOR` 映射语义色），禁止纯文字、禁止 `Badge`、禁止自绘圆点。
 7. 进入创建 / 编辑必须带 `state.from`，见 `form-page.md` §1.4。
 
 ### 生成卡片列表
 
-1. 复制 `scripts/list/05-CardListPage.tsx`。页头走无 Tab §1.1；搜索宽 280。
+**三列资源卡（§5）**
+
+1. 复制 `scripts/list/05-CardListPage.tsx`。页头走无 Tab §1.1；搜索宽 280；主按钮在工具行右。
 2. 网格固定 `grid-cols-3`、`gap-4`。卡挂 `yb-list-card`（12px），禁止 `yb-content-card`，禁止 Table。
 3. 整卡进详情；标题 16/24/500；状态 `ListTableStatusDot`；操作是 `Button type="text"`，`stopPropagation`。
-4. 空态 `PageLevelEmpty layout="inline"`。分页默认每页 20（`LIST_DEFAULT_PAGE_SIZE`），`sizeCanChange`。不要写成 6。
+4. 空态 `PageLevelEmpty layout="inline"`。分页默认每页 15（`LIST_CARD_PAGE_SIZE_3COL`），`sizeCanChange`。
 5. 删除 `Modal.confirm`。图标 48×48 可换成业务 SVG。
+
+**单列横向内容卡（§6）**
+
+1. 复制 `scripts/list/06-HorizontalCardListPage.tsx`。主按钮放页头标题行右侧。
+2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选。列表 `flex flex-col gap-4`，不要 `grid-cols-3`。
+3. 卡挂 `yb-list-card`；左文（标签 / 标题 / 摘要 / 发布与互动）右图 160×108。
+4. 空态 `PageLevelEmpty layout="inline"`。分页默认每页 10（`LIST_CARD_PAGE_SIZE_1COL`）。2 列同样 10。
+5. 不要先出 §5 三列应用卡再改。
 
 ### 生成表单页面
 
@@ -222,4 +241,5 @@ Skill 内 CSS 不会在用户项目自动生效。按 [bootstrap.md](references/
 | 3. 入口 | `main.tsx`：`arco.css` → `index.css` → `arco-theme-19155.css` |
 | 4. `@import` | `figma-tokens` → `shell-baseline` → `page-layout` → `message`（→ `nav-shell`）→ `@tailwind` |
 | 5. 根节点 | `<ArcoTheme19155Provider>` 包裹 App |
-| 6. 验收 | 校验白底红框；`Modal.confirm` 能弹出（React 18）；无 CSS 404；不要删减 `page-layout.css` 里表格 / 表单 / `yb-content-card` / `yb-list-card` 选择器 |
+| 6. 页签 | `index.html` `<title>` = `PLATFORM_PRODUCT_NAME`；拷 `assets/brand/favicon.ico` → `public/favicon.ico` |
+| 7. 验收 | 校验白底红框；`Modal.confirm` 能弹出（React 18）；无 CSS 404；不要删减 `page-layout.css` 里表格 / 表单 / `yb-content-card` / `yb-list-card` 选择器 |

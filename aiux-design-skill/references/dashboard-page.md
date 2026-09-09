@@ -13,7 +13,7 @@
 | [4. 图表](#4-图表echarts) | tooltip 无灰框；颜色先解析再交给画布 |
 | [5. 内嵌表](#5-内嵌表与分段控件) | 仍走列表表皮肤，不要整页搜索主表 |
 
-相关：[list-page.md](list-page.md)（无 Tab 页头、48px 表、卡片列表 §5）、[form-page.md](form-page.md)（`formCtrlWidth`）。
+相关：[list-page.md](list-page.md)（无 Tab 页头、48px 表、三列资源卡 §5、单列横向卡 §6）、[form-page.md](form-page.md)（`formCtrlWidth`）。
 
 ---
 
@@ -30,6 +30,7 @@
 | 值班 / 监控读数：CPU、内存等**独立采集**，每项当前值 + 近期走势 | §3，复制 `02-MetricTileDashboardPage.tsx` |
 | 搜索 + 一张主表 + 外置分页 | 不要用本文，走 [list-page.md](list-page.md) |
 | 卡片列表 / 广场 / 资源卡网格 | 不要用本文，走 [list-page.md](list-page.md) §5（`yb-list-card` 12px，不是本页 8px 卡） |
+| 单列横向内容卡 / 分页浏览 / 资产中心 | 不要用本文，走 [list-page.md](list-page.md) §6 |
 | 列表页上的局部 KPI 卡 | 卡片仍挂 `yb-content-card`，页骨架走列表 |
 | 登录卡、侧导位置选择器浮层 | 不要用 `yb-content-card` |
 
@@ -43,7 +44,7 @@
 | 刷新钮 | `scripts/components/SearchBox/` 的 `ListToolbarRefreshButton` |
 | 筛选宽度 | `scripts/patterns/formPageLayout.ts`（`formCtrlWidth` / `FORM_CTRL_W_160`） |
 | 消息 | `scripts/patterns/globalMessage.ts` |
-| 内嵌表 | 同 [list-page.md](list-page.md) §1.3 / §1.6；默认每页 `LIST_DEFAULT_PAGE_SIZE`（20） |
+| 内嵌表 | 同 [list-page.md](list-page.md) §1.3 / §1.6；默认每页 `LIST_DEFAULT_PAGE_SIZE`（10） |
 | 状态概览模板 | `scripts/dashboard/01-BasicDashboardPage.tsx`。只换 KPI、图表、TOP 表 |
 | 指标磁贴模板 | `scripts/dashboard/02-MetricTileDashboardPage.tsx`。只换磁贴字段、单位、色、明细表。宿主需 `npm install echarts`。禁止自写 12px 圆角卡、禁止灰底画布、禁止给卡片加阴影 |
 
@@ -127,7 +128,7 @@ Arco `Card` 默认 `--border-radius-none`（直角）。内容卡片必须：
 
 ## 5. 内嵌表与分段控件
 
-- 内嵌 TOP 表 / 主机明细走 [list-page.md](list-page.md) §1.3 / §1.6：`service-manage-table service-manage-list-table--row48-flex`、`pagination={false}`、外置「共 N 条」，表外层禁止 `flex-1`；默认每页 **20**（`LIST_DEFAULT_PAGE_SIZE`）
+- 内嵌 TOP 表 / 主机明细走 [list-page.md](list-page.md) §1.3 / §1.6：`service-manage-table service-manage-list-table--row48-flex`、`pagination={false}`、外置「共 N 条」，表外层禁止 `flex-1`；默认每页 **10**（`LIST_DEFAULT_PAGE_SIZE`）
 - 卡片工具行里的 Radio（今日/昨日、全部/已生效、任务/工作流）**不是表格列**，用 `Radio.Group type="button"` + `yb-radio-button-group`
 - RangePicker / DatePicker / Select 宽度走 `formCtrlWidth` / `FORM_CTRL_W_160`；控件皮肤走 `styles/arco-theme-19155.css`（不要在业务页给 Picker 另写）
 - 刷新：`ListToolbarRefreshButton` + `globalMessage`（整页刷新）。磁贴单卡失败只用卡内重试，不走全局消息
@@ -139,6 +140,6 @@ Arco `Card` 默认 `--border-radius-none`（直角）。内容卡片必须：
 1. 白底标题栏 padding 24 + `Divider`；根 `min-h-full`；内容区 `--color-bg-2` 四边 padding 24、**不要** `overflow-auto`。标题 20/30/600。**不要**内容区 `--yb-fill-2`。
 2. 内容卡片：`bordered={false}` + `yb-content-card shrink-0`，计算圆角 **8px**（不是 0，也不是 12），**不要**阴影。卡片列 `gap-4`。状态概览工具行放 Card body（不要 `title`/`extra`）+ 说明图标 + 六项 KPI（含已终止）。
 3. 指标磁贴（若本页是监控读数）：左右分栏、数字与单位对齐、空值 **—**、卡高预留；单卡失败只在该块重试。
-4. 内嵌表：`service-manage-table service-manage-list-table--row48-flex`，`pagination={false}`，分页 `mt-4 shrink-0` 紧跟表；默认每页 20。
+4. 内嵌表：`service-manage-table service-manage-list-table--row48-flex`，`pagination={false}`，分页 `mt-4 shrink-0` 紧跟表；默认每页 10。
 5. ECharts tooltip：`borderWidth: 0`，悬停气泡无灰框；option 里是解析后的颜色，不是 CSS 变量。
 6. 非表格列的分段用 `yb-radio-button-group`；整页消息走 `globalMessage`。

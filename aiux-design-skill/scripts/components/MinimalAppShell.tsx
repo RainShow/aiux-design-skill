@@ -51,7 +51,7 @@ export function MinimalAppShell({
     return (
       <div
         className={[
-          'flex h-[100dvh] w-full min-h-0 flex-col overflow-hidden text-[color:var(--yb-text-2)]',
+          'flex h-[100dvh] w-full min-h-0 min-w-[var(--yb-layout-min-w)] flex-col overflow-hidden text-[color:var(--yb-text-2)]',
           className,
         ]
           .filter(Boolean)
