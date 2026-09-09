@@ -8,11 +8,9 @@
 帮我安装skill：https://github.com/RainShow/aiux-design-skill
 ```
 
-安装完成后，Agent 生成页面时会读取 [`SKILL.md`](aiux-design-skill/SKILL.md)；新项目的依赖、样式和模板落地方式见 [`bootstrap.md`](aiux-design-skill/references/bootstrap.md)。
 
 
-
-## 新项目怎么走
+## 如何开始
 
 1. 使用上方提示词安装本 Skill，或将 `aiux-design-skill/` 复制到新仓库的 `.cursor/skills/aiux-design-skill/`
 2. 把下面这段发给 Agent（它会分三步做，每步停下来等你确认）
