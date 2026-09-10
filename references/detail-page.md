@@ -55,6 +55,7 @@
 - 未接入 Tab / 空数据：`PageLevelEmpty`（默认 `layout="page"`，距 Divider 下沿 1/4，宿主 `flex-1 min-h-0` **不要**再套 `justify-center`）。表格 / 卡片内用 `layout="inline"` 或 `LIST_TABLE_NO_DATA_ELEMENT`。禁止裸 Arco `Empty`。
 - 专用样式优先挂在 `.service-detail-page` 下（`page-layout.css`），避免污染全局。文中旧称 `index.css` 即此文件。
 - 点「编辑」进入表单必须带 `state.from`，见 [form-page.md](form-page.md) §1.4。
+- 从列表进入的详情顶栏**必须有返回**（回列表或 `state.from`）。列表已注册详情路由时，禁止用无返回的 `PlaceholderPage` 充数。
 
 ---
 

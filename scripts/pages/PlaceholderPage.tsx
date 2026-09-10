@@ -9,6 +9,7 @@ import { resolveNavTrail } from '../nav/resolveNavTrail'
  * 相对导入已对齐落地路径：复制到 `src/pages/` 后不必改 import。
  * 只给侧栏已有、业务页尚未落地的路由用。不要加搜索、不要加「创建 XX」。
  * 页面已落地、数据还是 mock 时，改走对应 `*-page.md` 模板。
+ * **禁止**用本页顶列表已挂的 create / detail：那些必须有顶栏返回（表单 / 详情模板）。
  */
 export function PlaceholderPage() {
   const { pathname } = useLocation()

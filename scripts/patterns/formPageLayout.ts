@@ -14,26 +14,69 @@ export const FORM_PAGE_ARCO_CLASS = 'app-form-page'
 /** 与 `index.css` 中 `.app-form-page` 水平表单的 `--yb-form-required-space`(12) + `--yb-form-required-gap`(4) 一致 */
 export const FORM_PAGE_LABEL_STAR_GAP_PX = 16 as const
 
+/**
+ * label 文案（及可选问号图标）右缘 → 控件左缘间距（px）。
+ * 估算 `labelCol` 时必须计入，不要用随意余量代替。
+ */
+export const FORM_PAGE_LABEL_CONTROL_GAP_PX = 16 as const
+
+/**
+ * label 旁问号图标占位（约 16 图标 + 与文案间距 4）。
+ * 仅当该页最长 label 旁挂问号时，传给 `formPageHorizontalLabelColFromLabels`。
+ */
+export const FORM_PAGE_LABEL_HELP_ICON_GAP_PX = 20 as const
+
 /** 全页水平表单 label 列默认最小宽度（px）；Arco `Col` 的 `flex: 'Npx'` 会规范为 `0 0 Npx` */
 export const FORM_PAGE_LABEL_COL_MIN_PX = 112 as const
 
 export const FORM_PAGE_LABEL_COL = { flex: `${FORM_PAGE_LABEL_COL_MIN_PX}px` } as const
 export const FORM_PAGE_WRAPPER_COL = { flex: '1' } as const
 
+export type FormPageLabelColOptions = {
+  /** 本页用于定宽的最长 label 旁是否带问号；默认 false */
+  hasHelpIcon?: boolean
+}
+
 /**
- * 按「当前页」全部 label 文案中最长的一条估算水平 `Form` 的 `labelCol` 宽度，使控件列左缘对齐。
- * 粗估：14px 级中文约 16px/字 + 必填星与间距占位，再向上取整到 8px。
+ * 按「当前页」全部 label 文案中最长的一条估算水平 `Form` 的 `labelCol`，使控件列左缘对齐。
+ * 公式：星号占位 + 字数×约 16px/字 + 可选问号占位 + **与控件间距 16**，再向上取整到 8px。
  */
-export function formPageHorizontalLabelColFromLabels(labels: readonly string[]): { flex: string } {
+export function formPageHorizontalLabelColFromLabels(
+  labels: readonly string[],
+  options?: FormPageLabelColOptions,
+): { flex: string } {
   const maxChars = labels.reduce((m, s) => Math.max(m, Array.from(s).length), 0) || 1
-  const raw = FORM_PAGE_LABEL_STAR_GAP_PX + maxChars * 16 + 8
+  const help = options?.hasHelpIcon ? FORM_PAGE_LABEL_HELP_ICON_GAP_PX : 0
+  const raw =
+    FORM_PAGE_LABEL_STAR_GAP_PX + maxChars * 16 + help + FORM_PAGE_LABEL_CONTROL_GAP_PX
   const px = Math.min(320, Math.max(FORM_PAGE_LABEL_COL_MIN_PX, Math.ceil(raw / 8) * 8))
   return { flex: `${px}px` }
 }
 export const FORM_PAGE_FORM_STYLE: CSSProperties = { width: '100%' }
 
-/** 表单项 `Form.Item` 的 `extra` 说明文案样式（见 `docs/form-page-layout-reference.md` §13） */
-export const FORM_FIELD_EXTRA_CLASS = 'text-[12px] leading-[18px] text-[color:var(--color-text-3)]'
+/**
+ * 表单项 `Form.Item` 的 `extra` 说明文案：与正文同档 **14 / 22**，色 `text-3`。
+ * 禁止再用 12px；字段说明走 `extra`，不要塞进 label 问号 Tooltip（除非产品明确要求问号）。
+ */
+export const FORM_FIELD_EXTRA_CLASS =
+  'text-[14px] leading-[22px] text-[color:var(--color-text-3)]' as const
+
+/** 选项卡（Radio + Card）body 内边距：上下 12、左右 16 */
+export const FORM_OPTION_CARD_BODY_STYLE: CSSProperties = { padding: '12px 16px' }
+
+/** 选项卡未选中：白底 + `--yb-border-2` 描边 */
+export const FORM_OPTION_CARD_IDLE_STYLE: CSSProperties = {
+  background: 'var(--color-bg-2)',
+  border: '1px solid var(--yb-border-2)',
+  boxSizing: 'border-box',
+}
+
+/** 选项卡选中：`primary-1` 浅底 + `primary-6` 描边 */
+export const FORM_OPTION_CARD_SELECTED_STYLE: CSSProperties = {
+  background: 'rgb(var(--primary-1))',
+  border: '1px solid rgb(var(--primary-6))',
+  boxSizing: 'border-box',
+}
 
 /** 表单项内局部控件宽度按 80px 档位递增（如 160 = 2×80，640 = 8×80） */
 export const FORM_CTRL_STEP_PX = 80
@@ -42,7 +85,10 @@ export function formCtrlWidth(steps: number) {
 }
 export const FORM_CTRL_W_160 = formCtrlWidth(2)
 
-/** 分组之间 `Divider`：仅保留下方 24px；上方由表单项默认下边距承接，避免与分割线叠出过大空白 */
+/**
+ * 分组之间 `Divider`：仅保留下方 24px。
+ * **默认不要用**——全页表单字段组之间只靠分组标题分隔；仅产品稿明确要求组间线时才加。
+ */
 export const FORM_SECTION_DIVIDER_STYLE: CSSProperties = { marginTop: 0, marginBottom: 24 }
 
 /** 同一行多列 `Grid.Row` 表单项水平间距（`gutter`） */

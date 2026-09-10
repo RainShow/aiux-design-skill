@@ -32,7 +32,7 @@
 | 用途 | 路径 |
 |------|------|
 | 表单 / 抽屉皮肤 | `styles/page-layout.css`（`.app-form-page`、`.yb-form-drawer`；落地后由 `index.css` `@import`） |
-| 布局常量 | `scripts/patterns/formPageLayout.ts`（`FORM_PAGE_*`、`FORM_DRAWER_*`、`formCtrlWidth`） |
+| 布局常量 | `scripts/patterns/formPageLayout.ts`（`FORM_PAGE_*`、`FORM_DRAWER_*`、`FORM_FIELD_EXTRA_CLASS`、`FORM_OPTION_CARD_*`、`formCtrlWidth`、`formPageHorizontalLabelColFromLabels`） |
 | 校验红框白底 | `styles/arco-theme-19155.css`（禁止 `--color-danger-light-1` 粉底） |
 | 内嵌表格 | 同 [list-page.md](list-page.md)；空态 `scripts/patterns/listTableNoDataElement.tsx` |
 | 整页起步模板 | `scripts/form/01-BasicFormPage.tsx`（全页水平）；`scripts/form/02-DrawerForm.tsx`（抽屉垂直）。只换字段、path、文案 |
@@ -49,6 +49,8 @@
 - 常量一律从 `formPageLayout.ts` 导入，不要在业务页手写 112 / 80 / 68 / 600。
 - 结构线：页头 `Divider`、底栏顶边均为 **1px / `--yb-border-2`**。禁止 0.5px 或 `--yb-border-1`。
 - 默认值写在 **Form 层**（`initialValues` 优先，其次 `Form.Item initialValue`），不要靠控件 `defaultValue`。`resetFields()` 才能回到同一套默认。
+- 字段说明默认走 `Form.Item` **`extra`** + `FORM_FIELD_EXTRA_CLASS`（**14 / 22**），不要塞进 label 问号，也不要用 12px。
+- 字段组之间**默认无 Divider**；仅产品明确要求时才加 `FORM_SECTION_DIVIDER_STYLE`。
 - 校验：`Form.Item` 配 `rules` 即可，不必手写 `validateStatus="error"`。控件必须 **红框 + 白底**（`--color-bg-2`），禁止 Arco dist 的 `--color-danger-light-1` 浅红填充。错误文案绝对定位，**禁止**把 Form.Item 撑高。校验失败不弹 Message。
 - 提交结果：创建 `globalMessage.ok('创建')`，编辑确定 `ok('保存')`；请求失败 `fail('创建'|'保存')`。禁止「已创建」「已保存」。
 - 底栏 / 抽屉 footer：**左对齐**，主操作在左、次要在右。默认文案「确定」「取消」。禁止 `justify-end`。
@@ -73,7 +75,26 @@
 | `style={FORM_PAGE_FORM_STYLE}` | `{ width: '100%' }`，横向宽度由外层 `px-6` 控制 |
 | `requiredSymbol` | 使用 Arco 内置必填星号 |
 
-长标签可用 `formPageHorizontalLabelColFromLabels` 估算 `labelCol`，使控件列左缘对齐。
+**Label 列宽（强制对齐）**
+
+| 约定 | 说明 |
+|------|------|
+| 默认短标签 | `labelCol={FORM_PAGE_LABEL_COL}`（**112px**） |
+| 本页有较长标签 | 用 `formPageHorizontalLabelColFromLabels(labels)`：按**本页全部 label 中最长字数**估宽，控件列左缘对齐 |
+| 与控件间距 | label 文案（及可选问号）右缘 → 控件左缘固定 **16px**（`FORM_PAGE_LABEL_CONTROL_GAP_PX`），公式已计入，禁止再手写 `marginLeft` |
+| 问号图标 | 最长 label 旁挂问号时传 `{ hasHelpIcon: true }`（另加 `FORM_PAGE_LABEL_HELP_ICON_GAP_PX`） |
+
+禁止硬编码 `marginLeft: 112` 等像素去「对齐」展开入口；展开入口用带空 label 的 `Form.Item`，与上方同 `labelCol`。
+
+### 1.1a 字段说明（`extra`）
+
+字段旁 / 下方的帮助文案：
+
+| 约定 | 说明 |
+|------|------|
+| 默认 | `Form.Item` 的 **`extra`** + `className={FORM_FIELD_EXTRA_CLASS}` |
+| 字号 | **14 / 22**（与正文同档），色 `--color-text-3`。**禁止** 12px |
+| 禁止 | 默认不要把说明塞进 label 旁问号 `Tooltip`；仅产品明确要求「问号气泡」时才用问号，且仍须满足 §1.1 的 16px 间距 |
 
 ### 1.2 全页表单顶栏（返回 + 主标题）
 
@@ -203,10 +224,22 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 ### 1.9 分组标题与分割线
 
 - **分组标题**：`Typography.Text`，`fontSize: 14`、`lineHeight: 22px`、`fontWeight: 600`、`color: var(--color-text-1)`；外层 **`mb-4`**。
-- **分组之间 `Divider`**（产品稿有分割线时）：`FORM_SECTION_DIVIDER_STYLE`（`marginTop: 0`, `marginBottom: 24`）。每个 `Form.Item` 已有默认下边距，分割线不再额外顶出空白。
-- **产品稿无分组分割线**：省略组间 `Divider`，仍保留分组标题。页头与滚动区之间的 `Divider style={{ margin: 0 }}` 是顶栏规范，不要删。
+- **组间分割线（默认禁止）**：字段组之间**默认不加** `Divider`，只保留分组标题。仅当产品稿 / 提示词**明确**要求组间线时，才用 `FORM_SECTION_DIVIDER_STYLE`（`marginTop: 0`, `marginBottom: 24`）。
+- 页头与滚动区之间的 `Divider style={{ margin: 0 }}` 是顶栏规范，**不要删**。不要把「顶栏 Divider」理解成「字段组也要 Divider」。
 
-### 1.10 同一行多列表单项
+### 1.10 选项卡（Radio + Card）
+
+精调方式、训练方法这类「卡片式单选」用 Arco `Radio.Group` + `Card`，**禁止**自绘 `<button>`。
+
+| 约定 | 说明 |
+|------|------|
+| 结构 | 左小图标（可选）+ 标题 + 下方一句说明；不要大插图除非产品给了图 |
+| `bodyStyle` | `FORM_OPTION_CARD_BODY_STYLE`（**12×16**） |
+| 未选中 | `FORM_OPTION_CARD_IDLE_STYLE`（白底 + `--yb-border-2`） |
+| 选中 | `FORM_OPTION_CARD_SELECTED_STYLE`（`primary-1` 浅底 + `primary-6` 描边） |
+| 默认值 | 与 §1.7 相同：首项排第一，并写入 `initialValues` |
+
+### 1.11 同一行多列表单项
 
 **默认禁止并排。** 全页水平表单是一行一个字段：左标签 112px，右控件最大 640px。服务类型、负责人、请求方法这类普通 Select / Input **必须各占一行**。
 
@@ -216,9 +249,9 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 - 水平间距：`FORM_GRID_ROW_GUTTER`（当前 **32**）。
 - **禁止**把两个带 112px 标签的水平 `Form.Item` 用 `Col span={12}` 对半切：第二项标签会落在行中间，和上下行 640 控件列也对不齐。
 
-### 1.11 内嵌表格
+### 1.12 内嵌表格
 
-表单页中常见内嵌表格（「添加服务」「字段列表」「关联资源」等）**必须复用**列表页 / 详情页的 Table 规范：表头、行高、单元格垂直对齐、横向滚动、空态、外置分页。
+表单页中常见内嵌表格（「添加服务」「字段列表」「关联资源」「超参数配置」等）**必须复用**列表页 / 详情页的 Table 规范：表头、行高、单元格垂直对齐、横向滚动、空态、外置分页。
 
 | 约定 | 说明 |
 |------|------|
@@ -228,10 +261,11 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 | props | `border={false}`，`pagination={false}` |
 | 表格外层 | `mt-4 min-w-0 overflow-x-auto shrink-0`。**禁止** `flex-1` / `min-h-0` |
 | 分页 | `mt-4 shrink-0`，「共 N 条」同 [list-page.md](list-page.md) §1.6 |
+| 多参数配置 | 产品要求「多项超参 + 说明」时，优先三列内嵌表（参数名 / 控件 / 说明），说明列用 14px `text-3`；不常用行可「更多参数」展开，收起用 `display:none` 保留挂载，勿卸载丢值 |
 
 业务页不要复制一套 Table CSS。细则见 list-page §1.3 / §1.5 / §1.6 与 detail-page 表格节。
 
-### 1.12 滚动区与内容宽度
+### 1.13 滚动区与内容宽度
 
 主内容区常见结构：`flex-1 min-h-0 overflow-auto` + 内层 `w-full px-6` + `w-full min-w-0` 包裹表单，避免 flex 子项把横向撑破。
 
@@ -282,16 +316,18 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 
 ### 全页水平（§1）
 
-1. 顶栏：`FORM_PAGE_CHROME_HEADER_HEIGHT_PX`、`FORM_PAGE_HEADER_BACK_BUTTON_STYLE`、`FORM_PAGE_HEADER_TITLE_STYLE`、`FORM_PAGE_HEADER_BACK_TITLE_GAP_PX`。创建态「创建 XX」，编辑态「编辑 XX」。
+1. 顶栏：`FORM_PAGE_CHROME_HEADER_HEIGHT_PX`、`FORM_PAGE_HEADER_BACK_BUTTON_STYLE`、`FORM_PAGE_HEADER_TITLE_STYLE`、`FORM_PAGE_HEADER_BACK_TITLE_GAP_PX`。创建态「创建 XX」，编辑态「编辑 XX」。**必须有返回钮**。
 2. 底栏：`FORM_PAGE_FOOTER_BAR_CLASS`，左对齐，主按钮在左、取消在右；默认「确定」「取消」；禁止 `justify-end`。
-3. `Form`：`FORM_PAGE_ARCO_CLASS` + `FORM_PAGE_LABEL_COL` / `FORM_PAGE_WRAPPER_COL` / `FORM_PAGE_FORM_STYLE`。
-4. 分组标题 `Typography.Text` + `mb-4`。稿面有分割线再加 `FORM_SECTION_DIVIDER_STYLE`；不要删页头 `Divider`。
-5. 固定档位宽用 `formCtrlWidth` / `FORM_CTRL_W_160`。短前缀用 `prefix`。
-6. 单选默认第一项：写入 `initialValues` / `initialValue`，与首个 option `value` 一致。
-7. 校验失败：红框 + 白底，错误文案不撑高字段；不弹 Message。创建成功 `ok('创建')`，编辑成功 `ok('保存')`。
-8. 默认单列。仅成组短字段才 `Grid.Row` gutter=`FORM_GRID_ROW_GUTTER`。
-9. 内嵌表格：复用列表 / 详情 Table class + 外置分页。
-10. 返回 / 取消 / 保存：读 `location.state.from`，缺省回列表；进入表单的列表 / 详情必须写入 `from`（§1.4）。
+3. `Form`：`FORM_PAGE_ARCO_CLASS` + `FORM_PAGE_LABEL_COL`（或 `formPageHorizontalLabelColFromLabels`）/ `FORM_PAGE_WRAPPER_COL` / `FORM_PAGE_FORM_STYLE`。label↔控件 16px，禁止硬编码 `marginLeft`。
+4. 字段说明：`extra` + `FORM_FIELD_EXTRA_CLASS`（14/22）；不要默认塞 label 问号。
+5. 分组标题 `Typography.Text` + `mb-4`。**默认无组间 Divider**；仅稿面明确要求才加 `FORM_SECTION_DIVIDER_STYLE`。不要删页头 `Divider`。
+6. 选项卡：选中 `FORM_OPTION_CARD_SELECTED_STYLE`，body `FORM_OPTION_CARD_BODY_STYLE`。
+7. 固定档位宽用 `formCtrlWidth` / `FORM_CTRL_W_160`。短前缀用 `prefix`。
+8. 单选默认第一项：写入 `initialValues` / `initialValue`，与首个 option `value` 一致。
+9. 校验失败：红框 + 白底，错误文案不撑高字段；不弹 Message。创建成功 `ok('创建')`，编辑成功 `ok('保存')`。
+10. 默认单列。仅成组短字段才 `Grid.Row` gutter=`FORM_GRID_ROW_GUTTER`。
+11. 内嵌表格：复用列表 / 详情 Table class + 外置分页。
+12. 返回 / 取消 / 保存：读 `location.state.from`，缺省回列表；进入表单的列表 / 详情必须写入 `from`（§1.4）。
 
 ### 抽屉垂直（§2）
 

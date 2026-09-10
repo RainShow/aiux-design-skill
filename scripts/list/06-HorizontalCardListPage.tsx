@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, Card, Divider, Pagination, Radio, Select, Tag, Typography } from '@arco-design/web-react'
-import { IconDown, IconEye, IconMessage, IconPlus, IconThumbUp, IconUp } from '@arco-design/web-react/icon'
+import { IconDown, IconImage, IconPlus, IconUp } from '@arco-design/web-react/icon'
 import { PageLevelEmpty } from '../components/PageLevelEmpty'
 import { SearchWithRefresh } from '../components/SearchBox'
 import { FORM_CTRL_W_160 } from '../patterns/formPageLayout'
@@ -9,12 +9,13 @@ import { LIST_CARD_PAGE_SIZE_1COL } from '../patterns/listPageLayout'
 
 /**
  * 单列横向卡片列表。规范：`references/list-page.md` §6。
- * 页头标题操作区 + 搜索 / 标签筛选 + 左文右图内容卡 + 外置分页。
+ * 页头只放标题；搜索 / 标签 / 创建主按钮同一工具行；左文右图内容卡 + 外置分页。
  *
  * 相对导入已对齐落地路径：复制到 `src/{feature}/` 后不必改 import。
  *
  * 只换：LIST_PATH、DEMO_ROWS、标签、文案、配图。保留 yb-list-card、整卡进详情、`state.from`。
- * 不要改成三列资源卡（那是 §5），不要 Table，不要 yb-content-card。
+ * 按提示词裁字段：默认无阅读/点赞/评论。不要改成三列资源卡（那是 §5），不要 Table，不要 yb-content-card。
+ * 列表若挂 create / detail：两页必须有顶栏返回，禁止无返回的 PlaceholderPage。
  */
 
 const LIST_PATH = '/contents'
@@ -33,9 +34,6 @@ type Row = {
   tags: string[]
   author: string
   publishedAt: string
-  views: number
-  likes: number
-  comments: number
 }
 
 const CHANNEL_OPTIONS: { label: string; value: Channel }[] = [
@@ -56,12 +54,6 @@ const CHANNEL_LABEL: Record<Channel, string> = {
   mobile: '移动端',
 }
 
-const COVER_THEME: Record<Channel, { from: string; to: string }> = {
-  web: { from: '#184ff2', to: '#7aa2ff' },
-  client: { from: '#ff7d00', to: '#ffb65d' },
-  mobile: { from: '#00b42a', to: '#7be188' },
-}
-
 const DEMO_ROWS: Row[] = [
   {
     id: '1',
@@ -72,9 +64,6 @@ const DEMO_ROWS: Row[] = [
     tags: ['网页端', '指南'],
     author: '张三',
     publishedAt: '2026-09-01 09:00',
-    views: 1280,
-    likes: 86,
-    comments: 12,
   },
   {
     id: '2',
@@ -85,9 +74,6 @@ const DEMO_ROWS: Row[] = [
     tags: ['客户端', '案例'],
     author: '李四',
     publishedAt: '2026-08-28 14:20',
-    views: 860,
-    likes: 42,
-    comments: 8,
   },
   {
     id: '3',
@@ -98,9 +84,6 @@ const DEMO_ROWS: Row[] = [
     tags: ['移动端', '公告'],
     author: '王五',
     publishedAt: '2026-08-20 11:10',
-    views: 540,
-    likes: 19,
-    comments: 3,
   },
   {
     id: '4',
@@ -111,9 +94,6 @@ const DEMO_ROWS: Row[] = [
     tags: ['网页端', '指南'],
     author: '赵六',
     publishedAt: '2026-08-12 16:40',
-    views: 410,
-    likes: 15,
-    comments: 5,
   },
   {
     id: '5',
@@ -124,9 +104,6 @@ const DEMO_ROWS: Row[] = [
     tags: ['客户端', '案例'],
     author: '钱七',
     publishedAt: '2026-08-08 10:05',
-    views: 320,
-    likes: 11,
-    comments: 2,
   },
   {
     id: '6',
@@ -137,41 +114,21 @@ const DEMO_ROWS: Row[] = [
     tags: ['移动端', '公告'],
     author: '孙八',
     publishedAt: '2026-08-02 09:30',
-    views: 0,
-    likes: 0,
-    comments: 0,
   },
 ]
 
-function formatStat(value: number): string {
-  if (value <= 0) return '—'
-  if (value >= 10000) return `${(value / 10000).toFixed(1)}万`
-  return String(value)
-}
-
-function Cover({ channel, title, coverId }: { channel: Channel; title: string; coverId: string }) {
-  const theme = COVER_THEME[channel]
-  const gradientId = `h-card-cover-${coverId}`
+/** 无实图时的图位：浅蓝灰底 + 24×24 IconImage，禁止纯灰空块或彩色渐变冒充实图 */
+function CoverPlaceholder() {
   return (
     <div
-      className="relative h-[108px] w-[160px] shrink-0 overflow-hidden"
-      style={{ borderRadius: 'var(--yb-radius-8, 8px)' }}
+      className="flex h-[108px] w-[160px] shrink-0 items-center justify-center"
+      style={{
+        borderRadius: 'var(--yb-radius-8, 8px)',
+        background: 'rgb(232, 239, 247)',
+      }}
       aria-hidden
     >
-      <svg viewBox="0 0 160 108" className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={theme.from} />
-            <stop offset="100%" stopColor={theme.to} />
-          </linearGradient>
-        </defs>
-        <rect width="160" height="108" fill={`url(#${gradientId})`} />
-        <circle cx="128" cy="22" r="28" fill="rgba(255,255,255,0.22)" />
-        <circle cx="24" cy="92" r="36" fill="rgba(255,255,255,0.12)" />
-        <rect x="18" y="40" width="72" height="8" rx="4" fill="rgba(255,255,255,0.85)" />
-        <rect x="18" y="56" width="48" height="6" rx="3" fill="rgba(255,255,255,0.55)" />
-      </svg>
-      <span className="sr-only">{title}</span>
+      <IconImage style={{ fontSize: 24, color: 'var(--color-text-4)' }} />
     </div>
   )
 }
@@ -213,7 +170,7 @@ export function HorizontalCardListPage() {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="shrink-0 bg-[color:var(--color-bg-2)]" style={{ padding: 24, boxSizing: 'border-box' }}>
-        <div className="flex h-8 min-w-0 flex-1 items-center gap-3">
+        <div className="flex h-8 min-w-0 flex-1 items-center">
           <Typography.Title
             heading={5}
             className="min-w-0 truncate"
@@ -221,15 +178,6 @@ export function HorizontalCardListPage() {
           >
             内容中心
           </Typography.Title>
-          <Button
-            className="ml-auto"
-            type="primary"
-            icon={<IconPlus />}
-            style={{ height: 32, paddingLeft: 16, paddingRight: 16 }}
-            onClick={goCreate}
-          >
-            创建内容
-          </Button>
         </div>
       </div>
       <Divider style={{ margin: 0 }} />
@@ -237,43 +185,53 @@ export function HorizontalCardListPage() {
         className="flex min-h-0 flex-1 flex-col gap-4 overflow-auto bg-[color:var(--color-bg-2)]"
         style={{ padding: 24, boxSizing: 'border-box' }}
       >
-        <div className="flex shrink-0 min-w-0 flex-wrap items-center gap-2">
-          <SearchWithRefresh
-            placeholder="搜索标题、摘要或标签"
-            value={keyword}
-            onChange={(value: string) => {
-              setKeyword(value)
-              setPage(1)
-            }}
-            onRefresh={() => setRefreshTick((n: number) => n + 1)}
-            iconPlacement="right"
-            size="md"
-            allowClear={false}
-            searchWrapStyle={{ width: 280 }}
-          />
-          <Radio.Group
-            type="button"
-            className="yb-radio-button-group"
-            value={channel}
-            onChange={(value: 'all' | Channel) => {
-              setChannel(value)
-              setPage(1)
-            }}
-          >
-            <Radio value="all">全部</Radio>
-            {CHANNEL_OPTIONS.map((opt) => (
-              <Radio key={opt.value} value={opt.value}>
-                {opt.label}
-              </Radio>
-            ))}
-          </Radio.Group>
+        <div className="flex shrink-0 min-w-0 flex-wrap items-center justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <SearchWithRefresh
+              placeholder="搜索标题、摘要或标签"
+              value={keyword}
+              onChange={(value: string) => {
+                setKeyword(value)
+                setPage(1)
+              }}
+              onRefresh={() => setRefreshTick((n: number) => n + 1)}
+              iconPlacement="right"
+              size="md"
+              allowClear={false}
+              searchWrapStyle={{ width: 280 }}
+            />
+            <Radio.Group
+              type="button"
+              className="yb-radio-button-group"
+              value={channel}
+              onChange={(value: 'all' | Channel) => {
+                setChannel(value)
+                setPage(1)
+              }}
+            >
+              <Radio value="all">全部</Radio>
+              {CHANNEL_OPTIONS.map((opt) => (
+                <Radio key={opt.value} value={opt.value}>
+                  {opt.label}
+                </Radio>
+              ))}
+            </Radio.Group>
+            <Button
+              type="secondary"
+              style={{ height: 32 }}
+              icon={advancedOpen ? <IconUp /> : <IconDown />}
+              onClick={() => setAdvancedOpen((open) => !open)}
+            >
+              高级筛选
+            </Button>
+          </div>
           <Button
-            type="secondary"
-            style={{ height: 32 }}
-            icon={advancedOpen ? <IconUp /> : <IconDown />}
-            onClick={() => setAdvancedOpen((open) => !open)}
+            type="primary"
+            icon={<IconPlus />}
+            style={{ height: 32, paddingLeft: 16, paddingRight: 16 }}
+            onClick={goCreate}
           >
-            高级筛选
+            创建内容
           </Button>
         </div>
         {advancedOpen ? (
@@ -363,27 +321,13 @@ function ContentCard({ row, onOpen }: { row: Row; onOpen: () => void }) {
           >
             {row.summary}
           </Typography.Text>
-          <div className="mt-auto flex min-w-0 flex-wrap items-center justify-between gap-3 pt-1">
+          <div className="mt-auto pt-1">
             <span className="text-[12px] leading-[18px] text-[color:var(--color-text-3)]">
               {row.author} · {row.publishedAt}
             </span>
-            <div className="flex shrink-0 items-center gap-4 text-[12px] leading-[18px] text-[color:var(--color-text-3)]">
-              <span className="inline-flex items-center gap-1">
-                <IconEye />
-                {formatStat(row.views)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <IconThumbUp />
-                {formatStat(row.likes)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <IconMessage />
-                {formatStat(row.comments)}
-              </span>
-            </div>
           </div>
         </div>
-        <Cover coverId={row.id} channel={row.channel} title={row.title} />
+        <CoverPlaceholder />
       </div>
     </Card>
   )

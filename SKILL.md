@@ -163,7 +163,7 @@ description: >-
 ### 生成列表页面
 
 1. 按选型复制 `scripts/list/01`–`06` 之一到 `src/{feature}/`。表模板只换列、数据、path、文案；§5 / §6 只换字段、数据、path。细节读 `list-page.md` 对应节。
-2. 复用 `SearchWithRefresh`、`ListTableStatusDot`。§1–§5 主按钮 **「创建 XX」** 放工具行右侧。§6 放页头标题行右侧。创建 / 编辑带 `state.from`。
+2. 复用 `SearchWithRefresh`、`ListTableStatusDot`。§1–§6 主按钮 **「创建 XX」** 一律放工具行右侧。创建 / 编辑带 `state.from`。按提示词裁掉模板示意字段。列表已挂的 create / detail **禁止**无返回的 `PlaceholderPage`。
 3. **§5 / §6**：到此为止，见下面「生成卡片列表」。**§1–§4** 继续 4–7。
 4. 再加 `TableColumnFilterTitle`、`LIST_TABLE_NO_DATA_ELEMENT`。Table：`border={false}`、`pagination={false}`；分页 `mt-4 shrink-0` 紧跟表外层，表外层禁止 `flex-1`。默认每页 10（`LIST_DEFAULT_PAGE_SIZE`）。用户改条数只动该常量。
 5. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME` + `Link`；操作列 `service-manage-actions` + Arco `Link`，class **禁止混用**。删除成功 `ok('删除')`。
@@ -182,26 +182,27 @@ description: >-
 
 **单列横向内容卡（§6）**
 
-1. 复制 `scripts/list/06-HorizontalCardListPage.tsx`。主按钮放页头标题行右侧。
-2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选。列表 `flex flex-col gap-4`，不要 `grid-cols-3`。
-3. 卡挂 `yb-list-card`；左文（标签 / 标题 / 摘要 / 发布与互动）右图 160×108。
+1. 复制 `scripts/list/06-HorizontalCardListPage.tsx`。页头只放标题；主按钮放**工具行右侧**（与搜索 / 标签同行）。
+2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选 + 右侧「创建 XX」。列表 `flex flex-col gap-4`，不要 `grid-cols-3`。
+3. 卡挂 `yb-list-card`；左文（标签 / 标题 / 摘要 / 创建信息）右图 160×108。无实图用浅蓝灰 + `IconImage` 24×24。提示词没提阅读/点赞/评论就删掉。
 4. 空态 `PageLevelEmpty layout="inline"`。分页默认每页 10（`LIST_CARD_PAGE_SIZE_1COL`）。2 列同样 10。
-5. 不要先出 §5 三列应用卡再改。
+5. 不要先出 §5 三列应用卡再改。create / detail 必须有顶栏返回。
 
 ### 生成表单页面
 
 1. 全页水平：复制 `scripts/form/01-BasicFormPage.tsx`，只换字段、path、文案。抽屉：复制 `scripts/form/02-DrawerForm.tsx`。
-2. `className={FORM_PAGE_ARCO_CLASS}`；常量从 `formPageLayout.ts` 导入。
-3. 全页水平默认**一行一个字段**，禁止两个 112px 标签 `Col span={12}` 对半切。
+2. `className={FORM_PAGE_ARCO_CLASS}`；常量从 `formPageLayout.ts` 导入。长标签用 `formPageHorizontalLabelColFromLabels`（含与控件 **16px** 间距）；字段说明走 `extra` + `FORM_FIELD_EXTRA_CLASS`（**14/22**）。
+3. 全页水平默认**一行一个字段**，禁止两个 112px 标签 `Col span={12}` 对半切。字段组**默认无组间 Divider**。选项卡选中用 `FORM_OPTION_CARD_SELECTED_STYLE`。
 4. 底栏 **「确定 / 取消」**（左对齐，主在左）；校验 **红框 + 白底**，禁止 `--color-danger-light-1`。创建 `ok('创建')`，编辑确定 `ok('保存')`；请求失败才 `fail`；校验失败不弹 Message。
-5. 返回 / 取消 / 保存回到 `from`，缺省回列表；禁止编辑态一律进详情；禁止只靠 `navigate(-1)`。
+5. 返回 / 取消 / 保存回到 `from`，缺省回列表；禁止编辑态一律进详情；禁止只靠 `navigate(-1)`。顶栏**必须有返回钮**。
 
 ### 生成详情页面
 
-1. 有主 Tab：复制 `scripts/detail/01-BasicDetailPage.tsx`。无主 Tab：复制 `scripts/detail/02-NoTabDetailPage.tsx`（80px 顶栏）。只换字段、表格、文案。不要把 80px 叠到有 Tab 页头上。
+1. 有主 Tab：复制 `scripts/detail/01-BasicDetailPage.tsx`。无主 Tab：复制 `scripts/detail/02-NoTabDetailPage.tsx`（80px 顶栏）。只换字段、表格、文案。不要把 80px 叠到有 Tab 页头上。顶栏**必须有返回钮**（回列表或 `state.from`）。
 2. 只读多行值用 `DetailFieldValue`。
 3. 标题旁状态与列表状态列用同一个 `ListTableStatusDot`，禁止 Arco `Badge`。
 4. 空 Tab 用 `PageLevelEmpty`（`layout="page"`），禁止裸 Arco `Empty`。复制地址 `ok('复制')` / `fail('复制')`。
+5. 列表已挂详情时，不要用无返回的 `PlaceholderPage` 充数。
 
 ### 生成看板页面
 
@@ -223,7 +224,7 @@ description: >-
 ## 输出规则
 
 1. 代码写入用户工作区，禁止改 Skill 目录。
-2. 先声明页面类型与参照章节。未搭建菜单页只出路径 +「还未搭建」，不要工具行按钮。已落地的 mock 页才按对应 `*-page.md` 搭页头 / 工具行。
+2. 先声明页面类型与参照章节。未搭建菜单页只出路径 +「还未搭建」，不要工具行按钮。已落地的 mock 页才按对应 `*-page.md` 搭页头 / 工具行。列表已挂的 create / detail 必须带顶栏返回，禁止裸 `PlaceholderPage`。复制模板后按提示词裁掉示意字段。
 3. 常量从 `src/patterns/` 导入，不手写魔法数。
 4. 结构线 `--yb-border-2` + `1px`。看板 / KPI 内容卡 `yb-content-card`（8px）。卡片列表 `yb-list-card`（12px）。禁止把 12px 套到看板卡，也禁止用 `yb-content-card` 做资源列表卡。
 5. 操作结果用 `globalMessage.ok('创建')` / `fail('创建')`，文案固定「X成功」/「X失败，请稍后重试」。禁止手写「已创建」「已删除」「列表已刷新」。表单校验失败只红框，不弹 Message。演示占位用 `info`（暂未开放），不要 `fail('打开')`。删除用 `Modal.confirm`（宽 400、圆角 8、正文 `pl-28`；标题「确定要操作XX吗？」、正文写影响），不用 `Popconfirm`。

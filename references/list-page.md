@@ -69,7 +69,9 @@
 - 名称列（仅 §1–§4）：`Link` + `LIST_TABLE_NAME_LINK_CLASSNAME`。操作列：`service-manage-actions` + **Arco `Link`**。两套 class **禁止混用**。§5 / §6 整卡进详情，标题不是表名称列；§5 操作是 Card 内文字按钮。
 - 表头筛选 / 排序（仅 §1–§4）：`TableColumnFilterTitle` / `TableColumnSortTitle`，**禁止**与列 `sorter` 同时用。状态列默认走表头漏斗，不要在工具行再放一套状态 Radio。
 - **状态点**：表状态列、卡片标题行、详情标题旁一律 `ListTableStatusDot`（8px 圆点、间距 8px、文案 14/22/`--color-text-2`）。颜色用 `STATUS_DOT_COLOR`（运行中绿、已停用灰、失败红；同一表还有「成功」时运行中用 `processing`）。禁止纯文字、禁止 Arco `Badge`、禁止自绘圆点。表单页状态下拉没有点，不必套本组件。
-- 主按钮文案 **「创建 XX」**。§1–§5 放工具行右侧，不要放无 Tab 页头标题行。**§6** 放页头标题行右侧（标题操作区），工具行只放搜索 / 标签。
+- 主按钮文案 **「创建 XX」**。§1–§6 **一律**放工具行右侧（与搜索 / 筛选同一行），不要放无 Tab 页头标题行。
+- **按提示词裁模板**：复制 `scripts/list/0x-*.tsx` 后，只保留用户要求的字段、筛选与操作；模板里的示意区块（如 §6 阅读/点赞/评论）提示词没提就删掉，不要原样留下。
+- **列表已挂创建 / 详情**：对应路由必须是带返回的表单页 / 详情页（或同等顶栏返回 stub），**禁止**用无返回的 `PlaceholderPage`。返回落点见 [form-page.md](form-page.md) §1.4。
 - 空态：表用 `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`；§5 / §6 用 `PageLevelEmpty layout="inline"`。禁止裸 Arco `Empty`。
 - 删除等确认：`Modal.confirm`，不用 `Popconfirm`。**标题**默认「确定要操作XX吗？」（删除即「确定要删除「名称」吗？」）；**正文**只写该操作带来的影响，不要把问句再写一遍。操作结果 `globalMessage.ok('删除')` / `fail('删除')` →「删除成功」/「删除失败，请稍后重试」。禁止「已删除」。表格状态文案「已停用」不是 Message。
 - 创建 / 编辑必须带 `state.from`，见 [form-page.md](form-page.md) §1.4。
@@ -272,17 +274,17 @@ Arco `Card`：`bordered={false}` + class **`yb-list-card`**（皮肤在 `page-la
 
 ## 6. 单列横向卡片列表
 
-无 Tab 页头（**标题操作区**）+ 搜索 / 标签筛选 + **一排一条**左文右图内容卡 + 外置分页。对齐「资产中心 / 分页浏览」，不是 §5 三列应用卡，也不是看板 KPI 卡。
+无 Tab 页头（**只放标题**）+ 搜索 / 标签筛选 / **创建主按钮同一工具行** + **一排一条**左文右图内容卡 + 外置分页。对齐「资产中心 / 分页浏览」，不是 §5 三列应用卡，也不是看板 KPI 卡。
 
-复制 `scripts/list/06-HorizontalCardListPage.tsx`。**不要**先出 `grid-cols-3` 再改。
+复制 `scripts/list/06-HorizontalCardListPage.tsx`。**不要**先出 `grid-cols-3` 再改。落地时按提示词裁掉模板示意字段（见共性「按提示词裁模板」）。
 
 ### 6.1 页头与工具行
 
 | 约定 | 说明 |
 |------|------|
-| 页头 | 无 Tab，四边 padding 24 + `Divider`。标题行右侧放主按钮「创建 XX」（可带 `IconPlus`），**不要**再留 280 搜索占位 |
+| 页头 | 无 Tab，四边 padding 24 + `Divider`。**只放标题**，不要把「创建 XX」放标题行右侧，也不要留 280 搜索占位 |
 | 内容区 | `flex-1 min-h-0 flex flex-col gap-4 overflow-auto`，`padding: 24` |
-| 工具行 | `SearchWithRefresh` 宽 280；标签用 `Radio.Group type="button"` + `yb-radio-button-group`；可选「高级筛选」展开更多 `Select`（宽 `FORM_CTRL_W_160`） |
+| 工具行 | 左侧：`SearchWithRefresh` 宽 280 + 标签 `Radio.Group type="button"` + `yb-radio-button-group` + 可选「高级筛选」；**右侧主按钮「创建 XX」**（可带 `IconPlus`）。容器 `shrink-0 flex items-center justify-between gap-2 min-w-0 flex-wrap` |
 | 列表 | `flex flex-col gap-4`，**一列**。不要 `grid-cols-3` |
 | 分页 | 默认 `pageSize={10}`（`LIST_CARD_PAGE_SIZE_1COL` / `listCardPageSize(1)`）。2 列卡片同样 10；3 列才用 15 |
 | 空态 | `PageLevelEmpty layout="inline"` |
@@ -293,14 +295,14 @@ Arco `Card`：`bordered={false}` + **`yb-list-card`**，`bodyStyle={{ padding: 2
 
 | 约定 | 说明 |
 |------|------|
-| 结构 | 左：标签 + 标题 + 摘要 + 发布信息 / 互动数据；右：配图 160×108，圆角 8 |
+| 结构 | 左：标签 + 标题 + 摘要 + 创建 / 发布信息；右：配图 160×108，圆角 8 |
 | 标题 | 16 / 24 / 500，`var(--color-text-1)`，单行 truncate |
 | 摘要 | 14 / 22，`var(--color-text-3)`，最多两行 |
 | 标签 | Arco `Tag` `bordered={false}`；端类型可用 `arcoblue` |
-| 底栏 | 左「作者 · 时间」12 / `--color-text-3`；右阅读 / 点赞 / 评论，空值「—」 |
-| 配图 | 可换成业务图；没有实图时用模板内占位渐变，不要留空框 |
+| 底栏 | 左「作者 · 时间」等创建信息，12 / `--color-text-3`。**阅读 / 点赞 / 评论仅当提示词明确要求**；默认不要加 |
+| 配图 | 有业务图则用业务图。无实图时用 **浅蓝灰底 + 居中 `IconImage` 24×24**（色 `--color-text-4`）示意图位；禁止纯灰空块、禁止彩色装饰渐变冒充实图 |
 
-创建 / 编辑带 `state.from`，同 §1。
+创建 / 编辑带 `state.from`，同 §1。列表若已注册 create / detail 路由，两页顶栏必须有返回（见共性）。
 
 ---
 
@@ -345,8 +347,9 @@ Arco `Card`：`bordered={false}` + **`yb-list-card`**，`bodyStyle={{ padding: 2
 
 ### 单列横向卡片（§6）
 
-1. 无 Tab 页头四边 24 + Divider；主按钮在**标题行右侧**。
-2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选；内容区 `flex flex-col gap-4`。
-3. 卡挂 `yb-list-card`；左文右图（160×108）；整卡进详情。
-4. 空态 `PageLevelEmpty layout="inline"`；分页默认每页 10、`sizeCanChange`。
-5. 不要做成 §5 三列资源卡。
+1. 无 Tab 页头四边 24 + Divider；**只放标题**；主按钮在**工具行右侧**（与搜索 / 标签同行）。
+2. 工具行：搜索 280 + 标签 Radio + 可选高级筛选 + 右侧「创建 XX」；内容区 `flex flex-col gap-4`。
+3. 卡挂 `yb-list-card`；左文右图（160×108）；整卡进详情。无实图用浅蓝灰 + `IconImage` 24×24。
+4. 按提示词裁字段：默认不要阅读 / 点赞 / 评论。
+5. 空态 `PageLevelEmpty layout="inline"`；分页默认每页 10、`sizeCanChange`。
+6. 不要做成 §5 三列资源卡。create / detail 必须有顶栏返回。
