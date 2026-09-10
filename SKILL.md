@@ -8,7 +8,7 @@ description: >-
 
 # AIUX Design Skill
 
-冷启动见 [README.md](README.md)。Agent **禁止通读** `references/` 与 `styles/`，按 [按任务选读](#按任务选读) 只加载当前任务的 1 份规范。目录对照见 README。
+人怎么装、怎么开项目见 [README.md](README.md)。Agent **禁止通读** `references/` 与 `styles/`，按 [按任务选读](#按任务选读) 只加载当前任务的 1 份规范。
 
 顶层为 `SKILL.md` / `references/` / `scripts/` / `styles/` / `assets/`。`scripts/` 内部对齐业务仓 `src/` 的代码树：去掉 `scripts/` 前缀复制后 **不必改 import**。`styles/` → 项目 `src/styles/`，`assets/` → 项目 `src/assets/`。不要把 `scripts/tsconfig.json`、`scripts/env.d.ts` 拷进业务仓库。不要把 `scripts/` 下 list / form / detail / dashboard / ide 整目录拷进项目；按需单文件拷到 `src/{feature}/`。登录可整拷 `auth/`。
 
