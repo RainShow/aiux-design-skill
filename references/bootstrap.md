@@ -29,13 +29,22 @@ npm install -D tailwindcss@3 postcss autoprefixer
 
 配置 Tailwind（`content` 覆盖 `./src/**/*.{ts,tsx}`）。图表按需：`npm install echarts`（仅落地看板页时）。
 
-`vite.config.ts` 加上 `optimizeDeps.include`，避免 HMR 把 `react-router-dom` 打成两份：
+`vite.config.ts` 加上 `resolve.dedupe` 与 `optimizeDeps.include`，避免 HMR 把 React / `react-router-dom` 打成两份（Arco Icon 会报 `Cannot read properties of null`）：
 
 ```ts
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', '@arco-design/web-react'],
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      '@arco-design/web-react',
+      '@arco-design/web-react/icon',
+    ],
   },
 })
 ```
@@ -151,7 +160,7 @@ export default function App() {
 |----------|------|
 | `scripts/auth/LoginPage.tsx` | `src/auth/LoginPage.tsx` |
 | `scripts/auth/LoginPageBackground.tsx` | `src/auth/LoginPageBackground.tsx` |
-| `assets/login/*` | `src/assets/login/` |
+| `assets/login/bg-2160-1.png` | `src/assets/login/bg-2160-1.png`（不要拷 `image-*` / `gradient-top-*`） |
 | `assets/brand/topnav-logo.svg` | `src/assets/brand/topnav-logo.svg` |
 | `scripts/auth/useDemoAuth.ts` | `src/auth/useDemoAuth.ts` |
 | `scripts/components/TopNavBrandLogo.tsx` | `src/components/TopNavBrandLogo.tsx`（只做登录、未拷整份导航壳时单独拷；已拷 §2.8 则不必再拷） |
@@ -164,7 +173,7 @@ export default function App() {
 </MinimalAppShell>
 ```
 
-主底图宽度公式与验收项见 [login-page.md](login-page.md)。登录最小宽与产品壳同为 1280，不要用 `lg`（1024）切移动布局。Demo 登录用 `writeDemoAuthed(true)`，`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给壳。
+主底图宽度公式与验收项见 [login-page.md](login-page.md)。登录最小宽与产品壳同为 1280，不要用 `lg`（1024）切移动布局。Cursor 预览口常小于 1280，登录卡在右侧，验收把视口拉到 ≥1280 或告诉用户往右滚。Demo 凭据只写在 `authDemo.ts`（`DEMO_USERNAME` / `DEMO_PASSWORD`，默认 `admin` / `admin`），表单预填，卡片下写明演示账号；登录走 `writeDemoAuthed(true)`（含 sessionStorage 失败时的内存兜底），`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给壳。页脚用中国电子云居中版权，不要 CES / 京ICP。
 
 ### 2.7.1 页签名称与 favicon
 
@@ -184,7 +193,7 @@ export default function App() {
 
 ### 2.8 产品导航壳（顶栏 + 按产品线默认的双列/单列侧导）
 
-落地前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列：全模态默认双列，模型开发 / 应用开发 / 基础管控等默认单列；只有用户强烈明确要求时才把非全模态改成双列。
+落地前先问用户：顶导几个入口、各叫什么（未指定时建议 全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。用户说「继续」且未点选时，按四个建议入口全部落地。**不要问**侧导双列还是单列：全模态默认双列，模型开发 / 应用开发 / 基础管控等默认单列；只有用户强烈明确要求时才把非全模态改成双列。
 
 复制：
 

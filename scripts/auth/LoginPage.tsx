@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Form, Input } from '@arco-design/web-react'
 import { IconLock, IconUser } from '@arco-design/web-react/icon'
 import { TopNavBrandLogo, PLATFORM_PRODUCT_NAME } from '../components/TopNavBrandLogo'
-import { writeDemoAuthed } from '../patterns/authDemo'
+import { DEMO_PASSWORD, DEMO_USERNAME, writeDemoAuthed } from '../patterns/authDemo'
 import {
   LOGIN_AUX_LINK_GAP_PX,
   LOGIN_BRAND_GRADIENT,
@@ -26,10 +26,6 @@ type LoginValues = {
   password: string
 }
 
-/** 演示环境固定凭据 */
-const DEMO_USERNAME = 'admin'
-const DEMO_PASSWORD = 'admin'
-
 /** 登录页平台名称 */
 const LOGIN_PLATFORM_NAME = PLATFORM_PRODUCT_NAME
 
@@ -37,13 +33,10 @@ const LOGIN_PLATFORM_NAME = PLATFORM_PRODUCT_NAME
 const LOGIN_FEATURE_SUMMARY =
   '面向国家关键行业，以应用场景为牵引，提供数智化产品与服务，已经覆盖了从数据治理，数据流通，本体构建，模型开发，智能体开发的全生命周期。'
 
-/** 页脚链接文案 */
-const LOGIN_FOOTER_LINKS = [
-  '@2026 CES 使用前必读',
-  '增值电信业务经营许可证：B1.B2-20100266',
-  '京ICP证030173号',
-  '隐私政策',
-] as const
+/** 页脚版权：中国电子云，居中一行；不要 CES / 京ICP 占位，不要 Logo / 友情链接 */
+const LOGIN_FOOTER_COPYRIGHT = '中电云计算技术有限公司 2022 保留一切权利 鄂B2-20220088-1'
+const LOGIN_FOOTER_BEIAN = '鄂公网安备 42011402000611号'
+const LOGIN_FOOTER_LEGAL = '法律声明及隐私权政策'
 
 /**
  * 登录页（对齐 Figma 节点 755:5716；背景层见 {@link LoginPageBackground}）
@@ -122,10 +115,19 @@ export function LoginPage() {
       </main>
 
       <footer className={`relative z-10 shrink-0 ${LOGIN_FOOTER_PAD_CLASS}`}>
-        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs leading-normal text-[color:var(--color-text-3,#646c85)]">
-          {LOGIN_FOOTER_LINKS.map((text) => (
-            <span key={text}>{text}</span>
-          ))}
+        <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-center gap-x-6 gap-y-1 text-xs leading-[18px] text-[color:var(--color-text-3,#646c85)]">
+          <span>{LOGIN_FOOTER_COPYRIGHT}</span>
+          <span className="inline-flex items-center gap-1">
+            <BeiAnBadge />
+            {LOGIN_FOOTER_BEIAN}
+          </span>
+          <button
+            type="button"
+            className="cursor-pointer border-0 bg-transparent p-0 text-xs leading-[18px] text-[color:var(--color-text-3,#646c85)] hover:opacity-80"
+            onClick={() => handlePlaceholderAction(LOGIN_FOOTER_LEGAL)}
+          >
+            {LOGIN_FOOTER_LEGAL}
+          </button>
         </div>
       </footer>
     </div>
@@ -152,7 +154,13 @@ function LoginFormCardContent({
         欢迎登录
       </h2>
 
-      <Form form={form} layout="vertical" requiredSymbol={false} onSubmit={onSubmit}>
+      <Form
+        form={form}
+        layout="vertical"
+        requiredSymbol={false}
+        onSubmit={onSubmit}
+        initialValues={{ username: DEMO_USERNAME, password: DEMO_PASSWORD }}
+      >
         <div className={`flex flex-col ${LOGIN_FORM_STACK_GAP_CLASS}`}>
           <FormItem
             field="username"
@@ -184,6 +192,9 @@ function LoginFormCardContent({
           <Button type="primary" htmlType="submit" long size="large" loading={loading}>
             登录
           </Button>
+          <p className="m-0 text-center text-[12px] leading-[18px] text-[color:var(--color-text-3)]">
+            演示账号 {DEMO_USERNAME} / {DEMO_PASSWORD}
+          </p>
 
           <div className="flex items-center justify-center" style={{ gap: LOGIN_AUX_LINK_GAP_PX }}>
             <button
@@ -209,5 +220,19 @@ function LoginFormCardContent({
         </div>
       </Form>
     </>
+  )
+}
+
+/** 公网安备盾牌（页脚备案号前） */
+function BeiAnBadge() {
+  return (
+    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden className="shrink-0">
+      <path
+        d="M7 0.5L13.25 2.4V7.1c0 3.55-2.55 6.55-6.25 7.9C3.3 13.65.75 10.65.75 7.1V2.4L7 .5Z"
+        fill="#1A4FA0"
+      />
+      <path d="M7 2.1 12 3.5v3.4c0 2.7-1.9 5-5 6.1-3.1-1.1-5-3.4-5-6.1V3.5L7 2.1Z" fill="#F2C14E" />
+      <circle cx="7" cy="7.2" r="2.1" fill="#1A4FA0" />
+    </svg>
   )
 }

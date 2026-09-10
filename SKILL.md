@@ -69,7 +69,7 @@ description: >-
 | 布局 | `tailwindcss` **v3** | 不要 v4 |
 | 语言 | TypeScript 5 | 禁止 `any` |
 
-图表按需 ECharts。脚手架见 [bootstrap.md](references/bootstrap.md)。
+图表按需 ECharts。脚手架见 [bootstrap.md](references/bootstrap.md)（`vite.config.ts` 需 `resolve.dedupe: ['react', 'react-dom']`，避免 HMR 把 React 打成两份）。
 
 ---
 
@@ -79,7 +79,7 @@ description: >-
 
 写代码前必须先问用户并等答复：
 
-顶导有几个入口、各叫什么？未指定时给出建议名让用户选（全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。侧导按默认提供：全模态数据智能默认双列，其他产品线默认单列。
+顶导有几个入口、各叫什么？未指定时给出建议名让用户选（全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。用户说「继续」且未点选时，按四个建议入口全部落地。侧导按默认提供：全模态数据智能默认双列，其他产品线默认单列。
 
 同一壳内可以混用：
 
@@ -142,7 +142,7 @@ description: >-
 
 ### 生成导航
 
-1. **先问**顶导入口名称（未指定时给：全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列。得到顶导答复后：全模态用双列，模型开发 / 应用开发 / 基础管控等用单列；仅当用户强烈要求时才把非全模态改成双列。
+1. **先问**顶导入口名称（未指定时给：全模态数据智能 / 模型开发 / 应用开发 / 基础管控）。**不要问**侧导双列还是单列。用户说「继续」且未点选时，按四个建议入口全部落地。得到顶导答复后：全模态用双列，模型开发 / 应用开发 / 基础管控等用单列；仅当用户强烈要求时才把非全模态改成双列。
 2. 读 `layout.md`、`nav-icons.md`。
 3. 复制 `scripts/components/` 产品壳，或只要 `MinimalAppShell`。相对导入已对齐，不必改。
 4. 从 `scripts/nav/exampleNavConfig.ts` 复制结构到 `src/nav/navConfig.ts`：按产品线默认形态保留 dual / singles，换成用户确认的入口名 / path / 图标。
@@ -153,10 +153,12 @@ description: >-
 
 ### 生成登录页面
 
-1. 读 `login-page.md`。整拷 `scripts/auth/`（含 `useDemoAuth.ts`）与 `assets/login/`、`assets/brand/topnav-logo.svg`。
-2. 全屏壳 `fullscreen` + `LOGIN_SHELL_BG`；根与壳 `min-w-[var(--yb-layout-min-w)]`（1280）。始终三栏，不要 `lg` 切移动卡。
-3. 登录成功 `writeDemoAuthed(true)`。`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给 `ProductAppShell`。
-4. 页签 title 与 `PLATFORM_PRODUCT_NAME` 一致；拷 favicon 到 `public/favicon.ico`。
+1. 读 `login-page.md`。整拷 `scripts/auth/`（含 `useDemoAuth.ts`）与 `assets/login/`、`assets/brand/topnav-logo.svg`。凭据从 `authDemo.ts` 的 `DEMO_USERNAME` / `DEMO_PASSWORD` 读，表单预填，卡片下写明演示账号；不要在登录页再写一套账号密码。
+2. 全屏壳 `fullscreen` + `LOGIN_SHELL_BG`；根与壳 `min-w-[var(--yb-layout-min-w)]`（1280）。始终三栏，不要 `lg` 切移动卡。Cursor 预览口常 < 1280，登录卡在右侧，验收把视口拉到 ≥1280 或告诉用户往右滚。
+3. 登录成功 `writeDemoAuthed(true)`（`authDemo.ts` 已含 sessionStorage 失败时的内存兜底）。`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给 `ProductAppShell`。
+4. 页脚用中国电子云居中版权（`LOGIN_FOOTER_*`），不要 CES / 京ICP，不要默认带 Logo / 友情链接。
+5. 背景只拷 `assets/login/bg-2160-1.png`。不要再拷 `image-*` / `gradient-top-*`，也不要在 `LoginPageBackground` 里引用它们。
+6. 页签 title 与 `PLATFORM_PRODUCT_NAME` 一致；拷 favicon 到 `public/favicon.ico`。
 
 ### 生成列表页面
 
