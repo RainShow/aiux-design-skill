@@ -115,7 +115,7 @@ export function TreeListPage() {
       okText: '确定',
       cancelText: '取消',
       onOk: () => {
-        globalMessage.success('已删除')
+        globalMessage.ok('删除')
       },
     })
   }

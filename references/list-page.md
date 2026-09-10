@@ -71,7 +71,7 @@
 - **状态点**：表状态列、卡片标题行、详情标题旁一律 `ListTableStatusDot`（8px 圆点、间距 8px、文案 14/22/`--color-text-2`）。颜色用 `STATUS_DOT_COLOR`（运行中绿、已停用灰、失败红；同一表还有「成功」时运行中用 `processing`）。禁止纯文字、禁止 Arco `Badge`、禁止自绘圆点。表单页状态下拉没有点，不必套本组件。
 - 主按钮文案 **「创建 XX」**。§1–§5 放工具行右侧，不要放无 Tab 页头标题行。**§6** 放页头标题行右侧（标题操作区），工具行只放搜索 / 标签。
 - 空态：表用 `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`；§5 / §6 用 `PageLevelEmpty layout="inline"`。禁止裸 Arco `Empty`。
-- 删除等确认：`Modal.confirm`，不用 `Popconfirm`。**标题**默认「确定要操作XX吗？」（删除即「确定要删除「名称」吗？」）；**正文**只写该操作带来的影响，不要把问句再写一遍。消息：`globalMessage`。
+- 删除等确认：`Modal.confirm`，不用 `Popconfirm`。**标题**默认「确定要操作XX吗？」（删除即「确定要删除「名称」吗？」）；**正文**只写该操作带来的影响，不要把问句再写一遍。操作结果 `globalMessage.ok('删除')` / `fail('删除')` →「删除成功」/「删除失败，请稍后重试」。禁止「已删除」。表格状态文案「已停用」不是 Message。
 - 创建 / 编辑必须带 `state.from`，见 [form-page.md](form-page.md) §1.4。
 
 ---
@@ -146,7 +146,9 @@ Modal.confirm({
   content: '服务删除后不可恢复，所有使用该服务的功能将停止运行。',
   okText: '确定',
   cancelText: '取消',
-  onOk: () => { /* … */ },
+  onOk: () => {
+    globalMessage.ok('删除')
+  },
 })
 ```
 
@@ -262,7 +264,7 @@ Arco `Card`：`bordered={false}` + class **`yb-list-card`**（皮肤在 `page-la
 | 状态 | 标题行右侧 `ListTableStatusDot`（已启用→`running`，未启用 / 已停用→`stopped`） |
 | 键值区 | 高 44、两行 14 / 22 / `--color-text-3`，溢出裁切（如 AccessKey / SecretKey） |
 | 操作 | 右对齐，`Button type="text"` 高 32、`!px-0`、色 `rgb(var(--primary-6))`、间距 8。常见：停用或启用 / 编辑 / 删除。**不要** `service-manage-actions` + Arco `Link`（那是表操作列） |
-| 删除 | 仍走共性 `Modal.confirm` |
+| 删除 | 仍走共性 `Modal.confirm`；成功 `ok('删除')`。启停 Message 用 `ok('启用'|'停用')`，不要「已启用」「已停用」（那是状态点文案） |
 
 创建 / 编辑带 `state.from`，同 §1。
 
@@ -310,7 +312,7 @@ Arco `Card`：`bordered={false}` + **`yb-list-card`**，`bodyStyle={{ padding: 2
 2. `SearchWithRefresh`；状态走表头筛选 + `ListTableStatusDot`；主按钮「创建 XX」在工具行右；筛选变化 `setPage(1)`。
 3. `service-manage-table service-manage-list-table--row48-flex`；`pagination={false}`；表外层勿 `flex-1`。
 4. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME`；省略用 `TableEllipsisCell`；排序/筛选勿混列 `sorter`。
-5. 操作列 `service-manage-actions` + Arco `Link`；删除 `Modal.confirm`。
+5. 操作列 `service-manage-actions` + Arco `Link`；删除 `Modal.confirm`，成功 `ok('删除')`。
 6. `noDataElement={LIST_TABLE_NO_DATA_ELEMENT}`。
 7. 分页「共 N 条」+ `Pagination` 同 §1.6；默认每页 10。
 
@@ -339,7 +341,7 @@ Arco `Card`：`bordered={false}` + **`yb-list-card`**，`bodyStyle={{ padding: 2
 3. 网格固定 `grid-cols-3`、`gap-4`；卡挂 `yb-list-card`，圆角 12，不要 `yb-content-card`。
 4. 整卡进详情；标题 16/24/500；状态 `ListTableStatusDot`；操作是文字按钮，`stopPropagation`。
 5. 空态 `PageLevelEmpty layout="inline"`；分页「共 N 条」、默认每页 15、`sizeCanChange`。
-6. 删除 `Modal.confirm`；创建 / 编辑带 `state.from`。
+6. 删除 `Modal.confirm`，成功 `ok('删除')`；启停 `ok('启用'|'停用')`；创建 / 编辑带 `state.from`。
 
 ### 单列横向卡片（§6）
 

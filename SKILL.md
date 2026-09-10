@@ -155,7 +155,7 @@ description: >-
 
 1. 读 `login-page.md`。整拷 `scripts/auth/`（含 `useDemoAuth.ts`）与 `assets/login/`、`assets/brand/topnav-logo.svg`。凭据从 `authDemo.ts` 的 `DEMO_USERNAME` / `DEMO_PASSWORD` 读，表单预填，卡片下写明演示账号；不要在登录页再写一套账号密码。
 2. 全屏壳 `fullscreen` + `LOGIN_SHELL_BG`；根与壳 `min-w-[var(--yb-layout-min-w)]`（1280）。始终三栏，不要 `lg` 切移动卡。Cursor 预览口常 < 1280，登录卡在右侧，验收把视口拉到 ≥1280 或告诉用户往右滚。
-3. 登录成功 `writeDemoAuthed(true)`（`authDemo.ts` 已含 sessionStorage 失败时的内存兜底）。`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给 `ProductAppShell`。
+3. 登录成功 `writeDemoAuthed(true)`（`authDemo.ts` 已含 sessionStorage 失败时的内存兜底）。凭据错误 / 请求失败 `globalMessage.fail('登录')`，成功 `ok('登录')`，不要「账号或密码错误」。`App.tsx` 用 `useDemoAuth()` 把 `isAuthed` / `onLogout` 传给 `ProductAppShell`。
 4. 页脚用中国电子云居中版权（`LOGIN_FOOTER_*`），不要 CES / 京ICP，不要默认带 Logo / 友情链接。
 5. 背景只拷 `assets/login/bg-2160-1.png`。不要再拷 `image-*` / `gradient-top-*`，也不要在 `LoginPageBackground` 里引用它们。
 6. 页签 title 与 `PLATFORM_PRODUCT_NAME` 一致；拷 favicon 到 `public/favicon.ico`。
@@ -166,7 +166,7 @@ description: >-
 2. 复用 `SearchWithRefresh`、`ListTableStatusDot`。§1–§5 主按钮 **「创建 XX」** 放工具行右侧。§6 放页头标题行右侧。创建 / 编辑带 `state.from`。
 3. **§5 / §6**：到此为止，见下面「生成卡片列表」。**§1–§4** 继续 4–7。
 4. 再加 `TableColumnFilterTitle`、`LIST_TABLE_NO_DATA_ELEMENT`。Table：`border={false}`、`pagination={false}`；分页 `mt-4 shrink-0` 紧跟表外层，表外层禁止 `flex-1`。默认每页 10（`LIST_DEFAULT_PAGE_SIZE`）。用户改条数只动该常量。
-5. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME` + `Link`；操作列 `service-manage-actions` + Arco `Link`，class **禁止混用**。
+5. 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME` + `Link`；操作列 `service-manage-actions` + Arco `Link`，class **禁止混用**。删除成功 `ok('删除')`。
 6. 有状态列时单元格用 `ListTableStatusDot`（`STATUS_DOT_COLOR` 映射语义色），禁止纯文字、禁止 `Badge`、禁止自绘圆点。
 7. 进入创建 / 编辑必须带 `state.from`，见 `form-page.md` §1.4。
 
@@ -178,7 +178,7 @@ description: >-
 2. 网格固定 `grid-cols-3`、`gap-4`。卡挂 `yb-list-card`（12px），禁止 `yb-content-card`，禁止 Table。
 3. 整卡进详情；标题 16/24/500；状态 `ListTableStatusDot`；操作是 `Button type="text"`，`stopPropagation`。
 4. 空态 `PageLevelEmpty layout="inline"`。分页默认每页 15（`LIST_CARD_PAGE_SIZE_3COL`），`sizeCanChange`。
-5. 删除 `Modal.confirm`。图标 48×48 可换成业务 SVG。
+5. 删除 `Modal.confirm`，成功 `ok('删除')`；启停 `ok('启用'|'停用')`。图标 48×48 可换成业务 SVG。
 
 **单列横向内容卡（§6）**
 
@@ -193,7 +193,7 @@ description: >-
 1. 全页水平：复制 `scripts/form/01-BasicFormPage.tsx`，只换字段、path、文案。抽屉：复制 `scripts/form/02-DrawerForm.tsx`。
 2. `className={FORM_PAGE_ARCO_CLASS}`；常量从 `formPageLayout.ts` 导入。
 3. 全页水平默认**一行一个字段**，禁止两个 112px 标签 `Col span={12}` 对半切。
-4. 底栏 **「确定 / 取消」**（左对齐，主在左）；校验 **红框 + 白底**，禁止 `--color-danger-light-1`。
+4. 底栏 **「确定 / 取消」**（左对齐，主在左）；校验 **红框 + 白底**，禁止 `--color-danger-light-1`。创建 `ok('创建')`，编辑确定 `ok('保存')`；请求失败才 `fail`；校验失败不弹 Message。
 5. 返回 / 取消 / 保存回到 `from`，缺省回列表；禁止编辑态一律进详情；禁止只靠 `navigate(-1)`。
 
 ### 生成详情页面
@@ -201,7 +201,7 @@ description: >-
 1. 有主 Tab：复制 `scripts/detail/01-BasicDetailPage.tsx`。无主 Tab：复制 `scripts/detail/02-NoTabDetailPage.tsx`（80px 顶栏）。只换字段、表格、文案。不要把 80px 叠到有 Tab 页头上。
 2. 只读多行值用 `DetailFieldValue`。
 3. 标题旁状态与列表状态列用同一个 `ListTableStatusDot`，禁止 Arco `Badge`。
-4. 空 Tab 用 `PageLevelEmpty`（`layout="page"`），禁止裸 Arco `Empty`。
+4. 空 Tab 用 `PageLevelEmpty`（`layout="page"`），禁止裸 Arco `Empty`。复制地址 `ok('复制')` / `fail('复制')`。
 
 ### 生成看板页面
 
@@ -226,7 +226,7 @@ description: >-
 2. 先声明页面类型与参照章节。未搭建菜单页只出路径 +「还未搭建」，不要工具行按钮。已落地的 mock 页才按对应 `*-page.md` 搭页头 / 工具行。
 3. 常量从 `src/patterns/` 导入，不手写魔法数。
 4. 结构线 `--yb-border-2` + `1px`。看板 / KPI 内容卡 `yb-content-card`（8px）。卡片列表 `yb-list-card`（12px）。禁止把 12px 套到看板卡，也禁止用 `yb-content-card` 做资源列表卡。
-5. 消息用 `globalMessage`。删除用 `Modal.confirm`（宽 400、圆角 8、正文 `pl-28`；标题「确定要操作XX吗？」、正文写影响），不用 `Popconfirm`。
+5. 操作结果用 `globalMessage.ok('创建')` / `fail('创建')`，文案固定「X成功」/「X失败，请稍后重试」。禁止手写「已创建」「已删除」「列表已刷新」。表单校验失败只红框，不弹 Message。演示占位用 `info`（暂未开放），不要 `fail('打开')`。删除用 `Modal.confirm`（宽 400、圆角 8、正文 `pl-28`；标题「确定要操作XX吗？」、正文写影响），不用 `Popconfirm`。
 6. 空态距顶 1/4，禁止垂直居中；表格用 `LIST_TABLE_NO_DATA_ELEMENT`；卡片列表用 `PageLevelEmpty layout="inline"`。
 7. 路由 `/create` → `/:id/edit` → `/:id` → 列表。文末附对应 `*-page.md` Checklist。
 

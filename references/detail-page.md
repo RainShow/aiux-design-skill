@@ -174,7 +174,7 @@
 | 行容器 | `yb-invoke-url-row`，`flex flex-row flex-nowrap items-start`，`gap: 8`，`min-w-0 w-full max-w-full`。行用顶对齐，是为了 URL **折行** 时 Method Tag 贴第一行，不是让 32px 按钮和 22px 正文去顶对齐 |
 | Method | `Tag` + `className="yb-method-tag"`，`bordered={false}`；高度 **22px**，`fontSize: 14`，`fontWeight: 500`，`lineHeight: 22px`，与正文一致；GET 用成功态浅绿底 |
 | URL 文本 | **不要**给长 URL 加 `flex-1`（会把复制按钮顶到值列最右侧）。用 `.yb-invoke-url-text` 把「链接 + 复制」成组（`inline-flex` + `align-items: center`），宽度跟内容走；文本 `word-break: break-all`、`overflow-wrap: anywhere`，保证完整换行 |
-| 复制 | **不要**对长 URL 使用 `Typography.Text` + `ellipsis` + `cssEllipsis`。使用独立 `Button type="text"` + `IconCopy` + `Tooltip` + `navigator.clipboard`。按钮必须 **22×22**（class `yb-invoke-url-copy`），与 Tag / 14-22 正文同高；外包 `yb-invoke-url-copy-wrap` 消掉 Tooltip 的 inline 基线。**禁止**用 Arco 默认约 32 高的文字按钮，否则 `items-start` 会让图标相对正文偏下 |
+| 复制 | **不要**对长 URL 使用 `Typography.Text` + `ellipsis` + `cssEllipsis`。使用独立 `Button type="text"` + `IconCopy` + `Tooltip` + `navigator.clipboard`。按钮必须 **22×22**（class `yb-invoke-url-copy`），与 Tag / 14-22 正文同高；外包 `yb-invoke-url-copy-wrap` 消掉 Tooltip 的 inline 基线。**禁止**用 Arco 默认约 32 高的文字按钮，否则 `items-start` 会让图标相对正文偏下。复制结果 `ok('复制')` / `fail('复制')`，禁止「已复制」 |
 
 `.yb-method-tag`、`.arco-tag-content` 已在 `page-layout.css` 覆盖 Arco Tag 默认字号 / 行高 / flex，勿删。
 
@@ -187,6 +187,6 @@
 3. 主 Tabs 使用 `service-detail-page-header-tabs`（纯导航再加 `data-source-manage-header-tabs`）。
 4. 滚动区内只读信息主容器 `w-full min-w-0`，Section 标题 16/24/600，字段行 74px 标签列；多行值用 `DetailFieldValue`。
 5. 表格 `service-detail-table`，`border={false}`。
-6. Method + URL：`yb-invoke-url-row` + `yb-method-tag` + 换行 URL + `yb-invoke-url-copy`（22×22）；禁止长链单行省略，禁止默认 32 高文字按钮。
+6. Method + URL：`yb-invoke-url-row` + `yb-method-tag` + 换行 URL + `yb-invoke-url-copy`（22×22）；禁止长链单行省略，禁止默认 32 高文字按钮；复制 `ok('复制')` / `fail('复制')`。
 7. 专用样式挂在 `.service-detail-page` 下。
 8. 未接入 Tab / 空数据用 `PageLevelEmpty`（或表格 `LIST_TABLE_NO_DATA_ELEMENT`）。

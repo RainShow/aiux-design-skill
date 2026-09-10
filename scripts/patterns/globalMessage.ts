@@ -36,17 +36,35 @@ function show(type: 'success' | 'info' | 'warning' | 'error', content: string) {
   })
 }
 
+/** 成功：「创建成功」 */
+export function formatMessageOk(action: string) {
+  return `${action}成功`
+}
+
+/** 失败：「创建失败，请稍后重试」 */
+export function formatMessageFail(action: string) {
+  return `${action}失败，请稍后重试`
+}
+
+/**
+ * 全局提示。
+ *
+ * 操作结果一律 `ok('创建')` / `fail('创建')`，文案固定「X成功」/「X失败，请稍后重试」。
+ * 禁止手写「已创建」「已删除」「列表已刷新」「账号或密码错误」。
+ * `info` 仅用于演示占位（暂未开放），不要把占位写成 `fail('打开')`。
+ * 表单校验失败只红框，不弹 Message。
+ */
 export const globalMessage = {
-  success(content: string) {
-    show('success', content)
+  ok(action: string) {
+    show('success', formatMessageOk(action))
+  },
+  fail(action: string) {
+    show('error', formatMessageFail(action))
   },
   info(content: string) {
     show('info', content)
   },
   warning(content: string) {
     show('warning', content)
-  },
-  error(content: string) {
-    show('error', content)
   },
 }

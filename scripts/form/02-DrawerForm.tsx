@@ -48,11 +48,11 @@ export function BasicDrawerForm({ visible, onClose, onSuccess }: BasicDrawerForm
   const onSubmit = async () => {
     try {
       await form.validate()
-      globalMessage.success('已创建')
+      globalMessage.ok('创建')
       onSuccess?.()
       onClose()
     } catch {
-      /* Form 已展示校验态：红框白底，错误文案不撑高 */
+      /* 校验失败只红框，不弹 Message；请求失败才 fail('创建') */
     }
   }
 

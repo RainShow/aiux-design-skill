@@ -33,7 +33,7 @@ export type SearchWithRefreshProps = {
    */
   onRefresh?: () => void
   /**
-   * 为 `false` 时不弹出内置「列表已刷新」，便于业务在 `onRefresh` 里自定义一条提示（避免双提示）。
+   * 为 `false` 时不弹出内置「刷新成功」，便于业务在 `onRefresh` 里自定义一条提示（避免双提示）。
    * @default true
    */
   showRefreshMessage?: boolean
@@ -59,9 +59,11 @@ export function SearchWithRefresh({
     if (!onChange) return
     // Arco `Input` 的 `onChange` 签名为 (value, event)；刷新仅同步清空受控值
     onChange('', {} as ChangeEvent<HTMLInputElement>)
-    onRefresh?.()
-    if (showRefreshMessage) {
-      globalMessage.success('列表已刷新')
+    try {
+      onRefresh?.()
+      if (showRefreshMessage) globalMessage.ok('刷新')
+    } catch {
+      if (showRefreshMessage) globalMessage.fail('刷新')
     }
   }
 

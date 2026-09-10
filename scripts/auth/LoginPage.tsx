@@ -51,15 +51,17 @@ export function LoginPage() {
 
   const handleSubmit = async (values: LoginValues) => {
     if (values.username.trim() !== DEMO_USERNAME || values.password !== DEMO_PASSWORD) {
-      globalMessage.error('账号或密码错误')
+      globalMessage.fail('登录')
       return
     }
     setLoading(true)
     try {
       await new Promise((r) => setTimeout(r, 450))
       writeDemoAuthed(true)
-      globalMessage.success('登录成功')
+      globalMessage.ok('登录')
       navigate('/', { replace: true })
+    } catch {
+      globalMessage.fail('登录')
     } finally {
       setLoading(false)
     }

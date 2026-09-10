@@ -67,8 +67,12 @@ function FieldRow({ label, children }: { label: string; children: string | numbe
 
 function CopyableUrl({ url }: { url: string }) {
   const copy = async () => {
-    await navigator.clipboard.writeText(url)
-    globalMessage.success('已复制')
+    try {
+      await navigator.clipboard.writeText(url)
+      globalMessage.ok('复制')
+    } catch {
+      globalMessage.fail('复制')
+    }
   }
   return (
     <span className="yb-invoke-url-text">

@@ -185,7 +185,7 @@ header h-56 | min-width 1280 | bg --yb-bg-2 | border-b 1px --yb-border-2 | shado
 | 打开 | 点击触发器；`getPopupContainer={() => document.body}`，避免侧导 `overflow-clip` 裁切 |
 | 搜索 | 过滤叶子标题；命中后自动展开祖先 |
 | 选中 | 只认叶子；触发器文案为面包屑 `组织/…/空间名`（按空间模式为 `空间：xxx`），选中后关闭 |
-| 创建 | `onCreateWorkspace`；不传则 `globalMessage` 演示提示 |
+| 创建 | `onCreateWorkspace`；不传则 `globalMessage.info` 演示占位（不要 `fail('创建')`） |
 | 紧凑 | `compact` 时用方触发器，面板内容与展开态相同 |
 
 **禁止**用 Arco 默认 option 列表充当位置选择器。`headerSlot={null}` / `workspaceSlot={null}` 才关闭顶条。业务真实组织树用壳层 `workspaceSelectProps={{ orgTree, spaceItems, onChange, onCreateWorkspace }}` 注入；**不要**为了接数据而 `dualHeaderSlot={<NavWorkspaceSelect … />}`（会丢掉仅轨 compact）。

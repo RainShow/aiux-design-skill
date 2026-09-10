@@ -131,7 +131,7 @@ Arco `Card` 默认 `--border-radius-none`（直角）。内容卡片必须：
 - 内嵌 TOP 表 / 主机明细走 [list-page.md](list-page.md) §1.3 / §1.6：`service-manage-table service-manage-list-table--row48-flex`、`pagination={false}`、外置「共 N 条」，表外层禁止 `flex-1`；默认每页 **10**（`LIST_DEFAULT_PAGE_SIZE`）
 - 卡片工具行里的 Radio（今日/昨日、全部/已生效、任务/工作流）**不是表格列**，用 `Radio.Group type="button"` + `yb-radio-button-group`
 - RangePicker / DatePicker / Select 宽度走 `formCtrlWidth` / `FORM_CTRL_W_160`；控件皮肤走 `styles/arco-theme-19155.css`（不要在业务页给 Picker 另写）
-- 刷新：`ListToolbarRefreshButton` + `globalMessage`（整页刷新）。磁贴单卡失败只用卡内重试，不走全局消息
+- 刷新：`ListToolbarRefreshButton` + `globalMessage.ok('刷新')`（整页刷新）。磁贴单卡失败只用卡内重试，不走全局消息
 
 ---
 
@@ -142,4 +142,4 @@ Arco `Card` 默认 `--border-radius-none`（直角）。内容卡片必须：
 3. 指标磁贴（若本页是监控读数）：左右分栏、数字与单位对齐、空值 **—**、卡高预留；单卡失败只在该块重试。
 4. 内嵌表：`service-manage-table service-manage-list-table--row48-flex`，`pagination={false}`，分页 `mt-4 shrink-0` 紧跟表；默认每页 10。
 5. ECharts tooltip：`borderWidth: 0`，悬停气泡无灰框；option 里是解析后的颜色，不是 CSS 变量。
-6. 非表格列的分段用 `yb-radio-button-group`；整页消息走 `globalMessage`。
+6. 非表格列的分段用 `yb-radio-button-group`；整页刷新 `ok('刷新')`，不要「已刷新」。

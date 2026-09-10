@@ -52,7 +52,7 @@
 - 无 TopNav / SideNav。根容器 `h-[100dvh]` + `overflow-hidden`；底色 `LOGIN_SHELL_BG`（`#dceaff`）。
 - 登录根与全屏壳加 `min-w-[var(--yb-layout-min-w)]`（**1280**），与产品壳同一最小宽。
 - **禁止**走业务主区的 `yb-layout-main-scroll`：纵向滚动会破坏背景 `absolute inset-0` 参照系。
-- Message 仍挂 `#yb-message-root` + `globalMessage`。
+- Message 仍挂 `#yb-message-root` + `globalMessage`。登录成功 `ok('登录')`，凭据错误 / 请求失败 `fail('登录')`，不要「账号或密码错误」。忘记密码 / 立即注册等演示占位用 `info('…暂未开放')`，不要 `fail`。
 - 常量从 `loginPageLayout.ts` 导入，不要在业务页手写 12.5% / 480 / `#dceaff`。
 - 登录卡片是 Arco `Form` `layout="vertical"`，与业务水平表单 `.app-form-page` **不是同一套**。
 - Demo 凭据只写在 `authDemo.ts`（默认 `admin` / `admin`），登录页预填并在卡片下提示；不要在 `LoginPage.tsx` 再写一套。鉴权用 `writeDemoAuthed(true)`（含 sessionStorage 失败时的内存兜底），不要只 `sessionStorage.setItem`；壳层用 `useDemoAuth()` 才能听到登录/退出。
@@ -128,6 +128,7 @@
 - 主按钮：`Button type="primary" long size="large"`，上方 `mt-6`，与辅助链同列 `gap-6`
 - 按钮下 12px 提示：「演示账号 admin / admin」（从 `authDemo.ts` 读，不要手写第二套）
 - 辅助链：「忘记密码」|「立即注册」——文字按钮（无边框）、`gap-[27px]`、中间 1×12px 竖线 `var(--color-border-3)`
+- 提交：成功 `ok('登录')`，凭据错误 / 请求失败 `fail('登录')`。忘记密码 / 立即注册用 `info('…暂未开放')`
 
 ---
 
@@ -174,6 +175,6 @@ h-auto min-h-full min-w-full max-w-none
 - [ ] 桌面：左右 12.5% 边距，三栏比例与卡片 `max-w 480`、顶距约 `22.625vh`
 - [ ] 视口 < 1280 时 html 横滚，不降级成仅卡片；预览区验收 ≥1280 或已提示往右滚
 - [ ] 主底图 `bg-2160-1.png` 可见，非纯色占位；盖满视口（高屏顶部无 `#dceaff` 缝），构图接近稿面（勿被 `h-full` 压扁）；没有 `image-*` / `gradient-top-*`
-- [ ] 表单 vertical + large 控件；凭据来自 `authDemo.ts` 且已预填；卡片下有演示账号提示；登录走 `globalMessage` + `writeDemoAuthed`
+- [ ] 表单 vertical + large 控件；凭据来自 `authDemo.ts` 且已预填；卡片下有演示账号提示；登录走 `ok('登录')` / `fail('登录')` + `writeDemoAuthed`
 - [ ] 页脚为中国电子云居中版权，不是 CES / 京ICP
 - [ ] 左上品牌与顶栏 `TopNavBrandLogo` 视觉一致；页签 title 与产品名一致；`public/favicon.ico` 已挂

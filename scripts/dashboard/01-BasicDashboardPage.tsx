@@ -118,7 +118,7 @@ export function BasicDashboardPage() {
   const [pageSize, setPageSize] = useState(LIST_DEFAULT_PAGE_SIZE)
 
   const onRefresh = () => {
-    globalMessage.success('已刷新')
+    globalMessage.ok('刷新')
   }
 
   return (

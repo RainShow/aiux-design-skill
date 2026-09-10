@@ -142,7 +142,7 @@ export function CardListPage() {
   const toggleStatus = (row: Row) => {
     const next: StatusValue = row.status === 'running' ? 'stopped' : 'running'
     setRows((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: next } : item)))
-    globalMessage.success(next === 'stopped' ? '已停用' : '已启用')
+    globalMessage.ok(next === 'stopped' ? '停用' : '启用')
   }
 
   const confirmDelete = (row: Row) => {
@@ -153,7 +153,7 @@ export function CardListPage() {
       cancelText: '取消',
       onOk: () => {
         setRows((prev) => prev.filter((item) => item.id !== row.id))
-        globalMessage.success('已删除')
+        globalMessage.ok('删除')
       },
     })
   }

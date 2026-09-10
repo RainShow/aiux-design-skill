@@ -49,7 +49,8 @@
 - 常量一律从 `formPageLayout.ts` 导入，不要在业务页手写 112 / 80 / 68 / 600。
 - 结构线：页头 `Divider`、底栏顶边均为 **1px / `--yb-border-2`**。禁止 0.5px 或 `--yb-border-1`。
 - 默认值写在 **Form 层**（`initialValues` 优先，其次 `Form.Item initialValue`），不要靠控件 `defaultValue`。`resetFields()` 才能回到同一套默认。
-- 校验：`Form.Item` 配 `rules` 即可，不必手写 `validateStatus="error"`。控件必须 **红框 + 白底**（`--color-bg-2`），禁止 Arco dist 的 `--color-danger-light-1` 浅红填充。错误文案绝对定位，**禁止**把 Form.Item 撑高。
+- 校验：`Form.Item` 配 `rules` 即可，不必手写 `validateStatus="error"`。控件必须 **红框 + 白底**（`--color-bg-2`），禁止 Arco dist 的 `--color-danger-light-1` 浅红填充。错误文案绝对定位，**禁止**把 Form.Item 撑高。校验失败不弹 Message。
+- 提交结果：创建 `globalMessage.ok('创建')`，编辑确定 `ok('保存')`；请求失败 `fail('创建'|'保存')`。禁止「已创建」「已保存」。
 - 底栏 / 抽屉 footer：**左对齐**，主操作在左、次要在右。默认文案「确定」「取消」。禁止 `justify-end`。
 - 普通 Select / Input **一行一个字段**。仅成组短控件才 `Grid.Row`。
 - 历史 class `create-data-table-attr-form` 已废弃，只用 `FORM_PAGE_ARCO_CLASS`。
@@ -287,7 +288,7 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 4. 分组标题 `Typography.Text` + `mb-4`。稿面有分割线再加 `FORM_SECTION_DIVIDER_STYLE`；不要删页头 `Divider`。
 5. 固定档位宽用 `formCtrlWidth` / `FORM_CTRL_W_160`。短前缀用 `prefix`。
 6. 单选默认第一项：写入 `initialValues` / `initialValue`，与首个 option `value` 一致。
-7. 校验失败：红框 + 白底，错误文案不撑高字段。
+7. 校验失败：红框 + 白底，错误文案不撑高字段；不弹 Message。创建成功 `ok('创建')`，编辑成功 `ok('保存')`。
 8. 默认单列。仅成组短字段才 `Grid.Row` gutter=`FORM_GRID_ROW_GUTTER`。
 9. 内嵌表格：复用列表 / 详情 Table class + 外置分页。
 10. 返回 / 取消 / 保存：读 `location.state.from`，缺省回列表；进入表单的列表 / 详情必须写入 `from`（§1.4）。
@@ -298,4 +299,4 @@ navigate(from || '/xxx', { replace: true }) // 返回 / 取消 / 保存
 2. `Form`：`layout="vertical"` + `FORM_PAGE_ARCO_CLASS` + `FORM_PAGE_FORM_STYLE` + 完整 `initialValues`。
 3. `footer`：左对齐，主在左、次在右；禁止 `justify-end`。
 4. 并排仅成组短字段，gutter=`FORM_DRAWER_GRID_ROW_GUTTER`。
-5. 不在业务里复制 `.app-form-page` CSS。
+5. 不在业务里复制 `.app-form-page` CSS。提交 `ok('创建')`，校验失败不弹 Message。

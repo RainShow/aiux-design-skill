@@ -332,7 +332,7 @@ index.html                   # <title> = PLATFORM_PRODUCT_NAME
 
 - [ ] `service-manage-table service-manage-list-table--row48-flex` 表头加粗、行高 48px
 - [ ] 分页紧贴表格下方，非视窗底部
-- [ ] `SearchWithRefresh` 宽 280、刷新可用（`globalMessage` 有提示）
+- [ ] `SearchWithRefresh` 宽 280、刷新可用（`ok('刷新')` →「刷新成功」）
 - [ ] 名称列 `LIST_TABLE_NAME_LINK_CLASSNAME` 悬停主色
 - [ ] 列表主按钮为 **「创建 XX」**（不要「新建 XX」）；状态列用表头筛选 + `ListTableStatusDot`
 - [ ] 删除确认为 `Modal.confirm`：宽 400、圆角 8、正文 pl-28 与标题齐平、按钮右对齐 gap 8（React 必须是 18）
