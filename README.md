@@ -29,7 +29,7 @@ aiux-design-skill/
 ## 安装
 
 ```text
-在当前项目安装 skill: https://github.com/Rainshow/aiux-design-skill
+安装项目级 skill: https://github.com/Rainshow/aiux-design-skill
 ```
 
 ## 如何开始
